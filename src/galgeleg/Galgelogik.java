@@ -65,6 +65,7 @@ public class Galgelogik {
     muligeOrd.add("solsort");
     muligeOrd.add("seksten");
     muligeOrd.add("sytten");
+    muligeOrd.add("atten");
     nulstil();
   }
 
