@@ -6,12 +6,13 @@ public class BenytGalgelogik {
 
     Galgelogik spil = new Galgelogik();
     spil.nulstil();
-
+/*
     try {
       spil.hentOrdFraDr();
     } catch (Exception e) {
       e.printStackTrace();
     }
+    */
     spil.logStatus();
 
     spil.gætBogstav("e");
