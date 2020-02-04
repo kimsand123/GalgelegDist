@@ -1,9 +1,7 @@
 package galgeleg;
 
-import galgeleg.Galgelogik;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -18,7 +16,7 @@ public class GalgelogikUnitTest {
 
   @Test
   public void afprøvMedSkovsnegl() {
-    Galgelogik spil = new Galgelogik();
+    GalgeLogikImpl spil = new GalgeLogikImpl();
     spil.muligeOrd.clear();
     spil.muligeOrd.add("skovsnegl");
     spil.nulstil();
@@ -37,7 +35,7 @@ public class GalgelogikUnitTest {
 
   @Test
   public void prøvHentOrdFraDr() throws Exception {
-    Galgelogik spil = new Galgelogik();
+    GalgeLogikImpl spil = new GalgeLogikImpl();
     spil.hentOrdFraDr();
     assertTrue("Mere end 100 ord fra DR", spil.muligeOrd.size()>100);
   }

@@ -1,10 +1,10 @@
 package galgeleg;
 
-public class BenytGalgelogik {
+public class GalgeClient {
 
   public static void main(String[] args) {
 
-    Galgelogik spil = new Galgelogik();
+    GalgeLogikImpl spil = new GalgeLogikImpl();
     spil.nulstil();
     // Kommentér ind for at hente ord fra DR
     /*
