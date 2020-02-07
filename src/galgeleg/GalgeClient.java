@@ -1,11 +1,26 @@
 package galgeleg;
 
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+
 public class GalgeClient {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 
-    GalgeLogikImpl spil = new GalgeLogikImpl();
+    IGalgeLogik spil = (IGalgeLogik) Naming.lookup("rmi://localhost:2000/Galgespil");
+
+    spil.hentOrdFraDR();
+    spil.logStatus();
     spil.nulstil();
+
+
+
+    //Der hentes automatisk ord fra DR
+
+
+
+
+    
     // Kommentér ind for at hente ord fra DR
     /*
     try {
@@ -23,63 +38,6 @@ public class GalgeClient {
       e.printStackTrace();
     }
     */
-    spil.logStatus();
 
-    spil.gætBogstav("e");
-    spil.logStatus();
-
-    spil.gætBogstav("a");
-    spil.logStatus();
-    System.out.println("" + spil.getAntalForkerteBogstaver());
-    System.out.println("" + spil.getSynligtOrd());
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("i");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("s");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("r");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("l");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("b");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("o");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("t");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("n");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("m");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("y");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("p");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
-
-    spil.gætBogstav("g");
-    spil.logStatus();
-    if (spil.erSpilletSlut()) return;
   }
 }

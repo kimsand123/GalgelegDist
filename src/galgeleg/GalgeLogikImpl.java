@@ -4,12 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-public class GalgeLogikImpl {
+public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   /** AHT afprøvning er muligeOrd synlig på pakkeniveau */
   ArrayList<String> muligeOrd = new ArrayList<String>();
   private String ordet;
@@ -20,8 +22,8 @@ public class GalgeLogikImpl {
   private boolean spilletErVundet;
   private boolean spilletErTabt;
 
-  public GalgeLogikImpl() {
-    muligeOrd.add("bil");
+  public GalgeLogikImpl() throws java.rmi.RemoteException{
+   /* muligeOrd.add("bil");
     muligeOrd.add("computer");
     muligeOrd.add("programmering");
     muligeOrd.add("motorvej");
@@ -29,8 +31,8 @@ public class GalgeLogikImpl {
     muligeOrd.add("gangsti");
     muligeOrd.add("skovsnegl");
     muligeOrd.add("solsort");
-    muligeOrd.add("nitten");
-    nulstil();
+    muligeOrd.add("nitten");*/
+
   }
 
 
@@ -143,8 +145,14 @@ public class GalgeLogikImpl {
   /**
    * Hent ord fra DRs forside (https://dr.dk)
    */
-  public void hentOrdFraDr() throws Exception {
-    String data = hentUrl("https://dr.dk");
+  @Override
+  public void hentOrdFraDR() throws RemoteException {
+    String data = null;
+    try {
+      data = hentUrl("https://dr.dk");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     //System.out.println("data = " + data);
 
     data = data.substring(data.indexOf("<body")). // fjern headere
