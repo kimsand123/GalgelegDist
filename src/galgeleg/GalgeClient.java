@@ -10,8 +10,17 @@ public class GalgeClient {
     IGalgeLogik spil = (IGalgeLogik) Naming.lookup("rmi://localhost:2000/Galgespil");
 
     spil.hentOrdFraDR();
+    System.out.println("Server fetched word from DR: " + spil.getOrdet());
     spil.logStatus();
+    System.out.println("\n**** STATUS ****");
+    System.out.println("Visible word: " + spil.getSynligtOrd());
+
+    boolean gameOver;
+    gameOver = spil.erSpilletTabt() || spil.erSpilletVundet() ? true : false;
+    System.out.println("Is game over? " + gameOver + "\n");
+
     spil.nulstil();
+    System.out.println("Game reset");
 
 
 
