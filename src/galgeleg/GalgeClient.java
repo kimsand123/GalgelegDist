@@ -1,9 +1,5 @@
 package galgeleg;
 
-
-
-import org.jcp.xml.dsig.internal.dom.DOMSubTreeData;
-
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import java.net.URL;
@@ -20,31 +16,42 @@ public class GalgeClient {
     final int PORT = 9898;
     final String TEST_ENV = "localhost:";
     final String PROD_ENV = "130.225.170.204:" + PORT + "/";
-    IGalgeLogik spil=null;
+    IGalgeLogik spil = null;
+    IUserAuth auth = null;
     Scanner letterInput = new Scanner(System.in);
     String brugernavn = "";
     String password = "";
     boolean loginOK;
+    boolean spilletTabt = false;
+    boolean spilletVundet = false;
 
 
     if (testEnvironment) {
       URL url = new URL("http://[::]:9898/galgespil?wsdl");
       QName qname = new QName("http://galgeleg/", "GalgeLogikImplService");
       Service service = Service.create(url, qname);
-      spil=service.getPort(IGalgeLogik.class);
-      System.out.println("Spil: ");
+      spil = service.getPort(IGalgeLogik.class);
+
+      URL authUrl = new URL("http://[::]:9899/userAuth?wsdl");
+      QName authQname = new QName("http://galgeleg/", "IUserAuthService");
+      Service authService = Service.create(url, qname);
+      auth = authService.getPort(IUserAuth.class);
+
+      System.out.println("Der spilles på localhost......");
+
     } else {
       URL url = new URL("http://130.225.170.204:9898/galgespil?wsdl");
       QName qname = new QName("http://galgeleg/", "GalgeLogikImplService");
       Service service = Service.create(url, qname);
-      spil=service.getPort(IGalgeLogik.class);
+      spil = service.getPort(IGalgeLogik.class);
     }
+
     do{
       System.out.print("Indtast brugernavn: ");
       brugernavn = letterInput.nextLine();
       System.out.print("\nIndtast password: ");
       password = letterInput.nextLine();
-      if (spil.login(brugernavn, password)){
+      if (auth.login(brugernavn, password)){
         loginOK = true;
       }else{
         System.out.println("Du har ikke indtastet rigtigt brugernavn og/eller password. Prøv igen.");
@@ -55,7 +62,7 @@ public class GalgeClient {
     System.out.println("ordet er: " + spil.getOrdet());
 
     //Loop hvis spillet ikke er tabt og ikke er vundet
-    while (!(spil.erSpilletTabt() && spil.erSpilletVundet())) {
+    while (true) {
       //Hent synligt ord og vis det.
       String visibleWord = spil.getSynligtOrd();
       System.out.println("Det synlige ord er: " + visibleWord);
@@ -79,6 +86,11 @@ public class GalgeClient {
             System.out.println("Ordet var: " + spil.getOrdet());
             break;
           }
+          if (spil.erSpilletTabt()) {
+            System.out.println("Du har desværre tabt spillet");
+            System.out.println("Ordet var:" + spil.getOrdet());
+            break
+          }
           if (spil.erSidsteBogstavKorrekt()) {
             System.out.println("Bogstavet " + letter + " findes i ordet");
           } else {
@@ -89,9 +101,5 @@ public class GalgeClient {
         }
       }
     }
-    if (spil.erSpilletTabt()) {
-      System.out.println("I har desværre tabt spillet");
-    }
-
   }
 }
