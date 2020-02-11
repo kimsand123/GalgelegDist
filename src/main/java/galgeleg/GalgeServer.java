@@ -1,5 +1,6 @@
 package galgeleg;
-import java.rmi.Naming;
+
+import javax
 
 public class GalgeServer {
 
@@ -13,15 +14,8 @@ public class GalgeServer {
         final String PROD_ENV ="rmi://130.225.170.204:"+PORT+"/";
 
         GalgeLogikImpl galgeLogik = new GalgeLogikImpl();
-        java.rmi.registry.LocateRegistry.createRegistry(PORT);
-
-        System.out.println("Registrer Galgeserver i NameRegistry");
-
-        if(!testEnvironment){
-            Naming.rebind("rmi://130.225.170.204:"+PORT+"/Galgespil", galgeLogik);
-        }else{
-            Naming.rebind("rmi://localhost:"+PORT+"/Galgespil", galgeLogik);
-        }
+        System.out.println("Publicerer Galgeleg over SOAP");
+        Endpoint.publish("rmi://localhost:2000/Galgespil", galgeLogik);
 
         System.out.println("Galgeserver er registreret i NameRegistry");
         System.out.print("Server kører.....\n\n");

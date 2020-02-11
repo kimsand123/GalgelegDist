@@ -23,16 +23,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   private boolean spilletErTabt;
 
   public GalgeLogikImpl() throws java.rmi.RemoteException{
-   /* muligeOrd.add("bil");
-    muligeOrd.add("computer");
-    muligeOrd.add("programmering");
-    muligeOrd.add("motorvej");
-    muligeOrd.add("busrute");
-    muligeOrd.add("gangsti");
-    muligeOrd.add("skovsnegl");
-    muligeOrd.add("solsort");
-    muligeOrd.add("nitten");*/
-
+    hentOrdFraDR();
   }
 
 
@@ -69,12 +60,14 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   }
 
 
-  public void nulstil() {
+  public void nulstil() throws RemoteException {
     brugteBogstaver.clear();
     antalForkerteBogstaver = 0;
     spilletErVundet = false;
     spilletErTabt = false;
-    if (muligeOrd.isEmpty()) throw new IllegalStateException("Listen over ord er tom!");
+    if (muligeOrd.isEmpty()) {
+      this.hentOrdFraDR();
+    }
     ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
     opdaterSynligtOrd();
   }
