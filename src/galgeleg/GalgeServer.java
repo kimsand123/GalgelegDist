@@ -7,8 +7,8 @@ public class GalgeServer {
 
     public static void main(String[] arg) throws Exception{
 
-        boolean testEnvironment = false;
-        final int PORT =9999;
+        boolean testEnvironment = true;
+        final int PORT =9898;
         final String TEST_ENV ="";
         final String PROD_ENV ="rmi://130.225.170.204:"+PORT+"/";
 

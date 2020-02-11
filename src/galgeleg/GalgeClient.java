@@ -1,62 +1,68 @@
 package galgeleg;
 
+import javax.xml.namespace.QName;
+import java.net.URL;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
-
+import  java.util.Scanner;
 public class GalgeClient {
 
   public static void main(String[] args) throws Exception {
 
+
     boolean testEnvironment = true;
-    final int PORT =9999;
-    final String TEST_ENV ="";
-    final String PROD_ENV ="rmi://130.225.170.204:"+PORT+"/";
+    final int PORT = 9898;
+    final String TEST_ENV = "localhost:";
+    final String PROD_ENV = "130.225.170.204:" + PORT + "/";
     IGalgeLogik spil;
+    Scanner letterInput = new Scanner(System.in);
 
-    if(!testEnvironment){
-      spil = (IGalgeLogik) Naming.lookup("rmi://130.225.170.204:"+PORT+"/Galgespil");
-    } else{
-      spil = (IGalgeLogik) Naming.lookup("rmi://localhost:"+PORT+"/Galgespil");
+    if (!testEnvironment) {
+      URL url = new URL("http://"+PROD_ENV+PORT+"/galgespil?wsdl");
+      QName qname = new QName("http://"+PROD_ENV+"/", "galgespilServerImplService");
+      spil = (IGalgeLogik) Naming.lookup("rmi://130.225.170.204:" + PORT + "/Galgespil");
+    } else {
+      spil = (IGalgeLogik) Naming.lookup("rmi://localhost:" + PORT + "/Galgespil");
     }
-    
-    spil.hentOrdFraDR();
-    System.out.println("Server fetched word from DR: " + spil.getOrdet());
-    spil.logStatus();
-    System.out.println("\n**** STATUS ****");
-    System.out.println("Visible word: " + spil.getSynligtOrd());
 
-    boolean gameOver;
-    gameOver = spil.erSpilletTabt() || spil.erSpilletVundet() ? true : false;
-    System.out.println("Is game over? " + gameOver + "\n");
+    System.out.println("ordet er: " + spil.getOrdet());
 
-    spil.nulstil();
-    System.out.println("Game reset");
+    while (!(spil.erSpilletTabt() && spil.erSpilletVundet())) {
+      //Hent synligt ord og vis det.
+      String visibleWord = spil.getSynligtOrd();
+      System.out.println("Det synlige ord er: " + visibleWord);
 
+      String letter = "";
+      //loop indtil længden på det indtastede er = 1
+      while (letter.length() != 1) {
+        //Hent input
+        System.out.print("Indtast det bogstav du vil gætte på: ");
+        letter = letterInput.nextLine();
 
+        //Hvis længden != 1 så skriv ledetekst, ellers kør videre med spillet
+        if (letter.length() != 1) {
+          System.out.println("Du skal indtaste 1 bogstav, hverken mere eller mindre");
+        } else {
 
-    //Der hentes automatisk ord fra DR
-
-
-
-
-    
-    // Kommentér ind for at hente ord fra DR
-    /*
-    try {
-      spil.hentOrdFraDr();
-    } catch (Exception e) {
-      e.printStackTrace();
+          //Send input, og check om bogstavet var korrekt
+          spil.gætBogstav(letter);
+          if (spil.erSpilletVundet()) {
+            System.out.println("Tillykke I har vundet spiller");
+            System.out.println("Ordet var: " + spil.getOrdet());
+            break;
+          }
+          if (spil.erSidsteBogstavKorrekt()) {
+            System.out.println("Bogstavet " + letter + " findes i ordet");
+          } else {
+            //hangman picture
+            System.out.println("Bogstavet " + letter + " findes ikke i ordet");
+          }
+          System.out.println("De brugte bogstaver er: " + spil.getBrugteBogstaver());
+        }
+      }
     }
-    */
-
-    // Kommentér ind for at hente ord fra et online regneark
-    /*
-    try {
-      spil.hentOrdFraRegneark("12");
-    } catch (Exception e) {
-      e.printStackTrace();
+    if (spil.erSpilletTabt()) {
+      System.out.println("I har desværre tabt spillet");
     }
-    */
 
   }
 }
