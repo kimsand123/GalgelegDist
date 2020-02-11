@@ -171,7 +171,6 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
     nulstil();
   }
 
-
   /**
    * Hent ord og sværhedsgrad fra et online regneark. Du kan redigere i regnearket, på adressen
    * https://docs.google.com/spreadsheets/d/1RnwU9KATJB94Rhr7nurvjxfg09wAHMZPYB3uySBPO6M/edit?usp=sharing

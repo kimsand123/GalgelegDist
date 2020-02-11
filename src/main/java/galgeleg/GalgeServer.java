@@ -8,8 +8,15 @@ public class GalgeServer {
 
     public static void main(String[] arg) throws Exception{
         GalgeLogikImpl galgeLogik = new GalgeLogikImpl();
-        System.out.println("Publicerer Galgeleg over SOAP");
+
+        System.out.println("Publicerer Galgeleg via SOAP");
         Endpoint.publish("http://[::]:9898/galgespil", galgeLogik);
-        System.out.println("Server is running..\n\n");
+        System.out.println("Galgeleg server is running..\n\n");
+
+        UserAuthentication userAuthentication = new UserAuthentication();
+        System.out.println("Publicerer UserAuth via SOAP");
+        Endpoint.publish("http://[::]:9999/userAuth", userAuthentication);
+        System.out.println("UserAuth server is running...\n\n");
+
     }
 }
