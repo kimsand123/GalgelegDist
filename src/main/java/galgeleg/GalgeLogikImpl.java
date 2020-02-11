@@ -1,5 +1,6 @@
 package galgeleg;
 
+import javax.jws.WebService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
+@WebService(endpointInterface = "galgeleg.IGalgeLogik")
 public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   /** AHT afprøvning er muligeOrd synlig på pakkeniveau */
   ArrayList<String> muligeOrd = new ArrayList<String>();
@@ -22,7 +24,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   private boolean spilletErVundet;
   private boolean spilletErTabt;
 
-  public GalgeLogikImpl() throws java.rmi.RemoteException{
+  public GalgeLogikImpl() throws RemoteException {
     hentOrdFraDR();
   }
 
@@ -60,7 +62,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   }
 
 
-  public void nulstil() throws RemoteException {
+  public void nulstil() {
     brugteBogstaver.clear();
     antalForkerteBogstaver = 0;
     spilletErVundet = false;
@@ -139,7 +141,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
    * Hent ord fra DRs forside (https://dr.dk)
    */
   @Override
-  public void hentOrdFraDR() throws RemoteException {
+  public void hentOrdFraDR() {
     String data = null;
     try {
       data = hentUrl("https://dr.dk");
