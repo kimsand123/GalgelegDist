@@ -1,9 +1,16 @@
 package galgeleg;
 
+
+
+import org.jcp.xml.dsig.internal.dom.DOMSubTreeData;
+
 import javax.xml.namespace.QName;
+import javax.xml.ws.Service;
 import java.net.URL;
 import java.rmi.Naming;
 import  java.util.Scanner;
+import java.util.ServiceConfigurationError;
+
 public class GalgeClient {
 
   public static void main(String[] args) throws Exception {
@@ -13,19 +20,41 @@ public class GalgeClient {
     final int PORT = 9898;
     final String TEST_ENV = "localhost:";
     final String PROD_ENV = "130.225.170.204:" + PORT + "/";
-    IGalgeLogik spil;
+    IGalgeLogik spil=null;
     Scanner letterInput = new Scanner(System.in);
+    String brugernavn = "";
+    String password = "";
+    boolean loginOK;
 
-    if (!testEnvironment) {
-      URL url = new URL("http://"+PROD_ENV+PORT+"/galgespil?wsdl");
-      QName qname = new QName("http://"+PROD_ENV+"/", "galgespilServerImplService");
-      spil = (IGalgeLogik) Naming.lookup("rmi://130.225.170.204:" + PORT + "/Galgespil");
+
+    if (testEnvironment) {
+      URL url = new URL("http://[::]:9898/galgespil?wsdl");
+      QName qname = new QName("http://galgeleg/", "GalgeLogikImplService");
+      Service service = Service.create(url, qname);
+      spil=service.getPort(IGalgeLogik.class);
+      System.out.println("Spil: ");
     } else {
-      spil = (IGalgeLogik) Naming.lookup("rmi://localhost:" + PORT + "/Galgespil");
+      URL url = new URL("http://130.225.170.204:9898/galgespil?wsdl");
+      QName qname = new QName("http://galgeleg/", "GalgeLogikImplService");
+      Service service = Service.create(url, qname);
+      spil=service.getPort(IGalgeLogik.class);
     }
+    do{
+      System.out.print("Indtast brugernavn: ");
+      brugernavn = letterInput.nextLine();
+      System.out.print("\nIndtast password: ");
+      password = letterInput.nextLine();
+      if (spil.login(brugernavn, password)){
+        loginOK = true;
+      }else{
+        System.out.println("Du har ikke indtastet rigtigt brugernavn og/eller password. Prøv igen.");
+        loginOK = false;
+      }
+    }while(!loginOK);
 
     System.out.println("ordet er: " + spil.getOrdet());
 
+    //Loop hvis spillet ikke er tabt og ikke er vundet
     while (!(spil.erSpilletTabt() && spil.erSpilletVundet())) {
       //Hent synligt ord og vis det.
       String visibleWord = spil.getSynligtOrd();
