@@ -17,7 +17,7 @@ public class GalgeServer {
 
         System.out.println("Registrer Galgeserver i NameRegistry");
 
-        if(testEnvironment){
+        if(!testEnvironment){
             Naming.rebind("rmi://130.225.170.204:"+PORT+"/Galgespil", galgeLogik);
         }else{
             Naming.rebind("rmi://localhost:"+PORT+"/Galgespil", galgeLogik);

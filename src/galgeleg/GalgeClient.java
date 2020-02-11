@@ -7,13 +7,13 @@ public class GalgeClient {
 
   public static void main(String[] args) throws Exception {
 
-    boolean testEnvironment = false;
+    boolean testEnvironment = true;
     final int PORT =9999;
     final String TEST_ENV ="";
     final String PROD_ENV ="rmi://130.225.170.204:"+PORT+"/";
     IGalgeLogik spil;
 
-    if(testEnvironment){
+    if(!testEnvironment){
       spil = (IGalgeLogik) Naming.lookup("rmi://130.225.170.204:"+PORT+"/Galgespil");
     } else{
       spil = (IGalgeLogik) Naming.lookup("rmi://localhost:"+PORT+"/Galgespil");
