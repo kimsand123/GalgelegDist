@@ -6,8 +6,8 @@ import java.net.MalformedURLException;
 
 @WebService
 public interface IUserAuth {
-
-    @WebMethod boolean login(String username, String password) throws MalformedURLException;
+    @WebMethod
+    boolean login(String username, String password) throws MalformedURLException;
 
 
 }

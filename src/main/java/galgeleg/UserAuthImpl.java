@@ -5,9 +5,14 @@ import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 @WebService(endpointInterface = "galgeleg.IUserAuth")
-public class UserAuthentication implements IUserAuth {
+public class UserAuthImpl extends UnicastRemoteObject implements IUserAuth {
+
+    protected UserAuthImpl() throws RemoteException {
+    }
 
     public boolean login(String username, String password) throws MalformedURLException {
         URL url = new URL("http://javabog.dk:9901/brugeradmin?wsdl");
