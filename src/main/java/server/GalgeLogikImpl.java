@@ -1,4 +1,6 @@
-package galgeleg;
+package server;
+
+import interfaces.IGalgeLogik;
 
 import javax.jws.WebService;
 import java.io.BufferedReader;
@@ -12,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 
-@WebService(endpointInterface = "galgeleg.IGalgeLogik")
+@WebService(endpointInterface = "interfaces.IGalgeLogik")
 public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   /** AHT afprøvning er muligeOrd synlig på pakkeniveau */
   ArrayList<String> muligeOrd = new ArrayList<String>();
@@ -91,7 +93,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
 
   public void gætBogstav(String bogstav) {
     if (bogstav.length() != 1) return;
-    System.out.println("Der gættes på bogstavet: " + bogstav);
+    System.out.println("Der gættes på bogstavet: " + bogstav + "\n");
     if (brugteBogstaver.contains(bogstav)) return;
     if (spilletErVundet || spilletErTabt) return;
 
@@ -99,11 +101,11 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
 
     if (ordet.contains(bogstav)) {
       sidsteBogstavVarKorrekt = true;
-      System.out.println("Bogstavet var korrekt: " + bogstav);
+      System.out.println("Bogstavet var korrekt: " + bogstav + "\n");
     } else {
       // Vi gættede på et bogstav der ikke var i ordet.
       sidsteBogstavVarKorrekt = false;
-      System.out.println("Bogstavet var IKKE korrekt: " + bogstav);
+      System.out.println("Bogstavet var IKKE korrekt: " + bogstav + "\n");
       antalForkerteBogstaver = antalForkerteBogstaver + 1;
       if (antalForkerteBogstaver > 6) {
         spilletErTabt = true;

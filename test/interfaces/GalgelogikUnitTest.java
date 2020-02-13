@@ -1,4 +1,4 @@
-package galgeleg;
+package interfaces;
 
 import org.junit.Test;
 
