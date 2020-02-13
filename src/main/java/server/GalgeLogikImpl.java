@@ -28,6 +28,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
 
   public GalgeLogikImpl() throws RemoteException {
     hentOrdFraDR();
+    System.out.println("\n**\nNew word is gathered: " + this.ordet + "\n**\n");
   }
 
 
@@ -74,6 +75,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
     }
     ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
     opdaterSynligtOrd();
+    System.out.println("\n**\nNew word is gathered: " + this.ordet + "\n**\n");
   }
 
 
@@ -168,6 +170,13 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
     System.out.println("data = " + Arrays.asList(data.split("\\s+")));
     muligeOrd.clear();
     muligeOrd.addAll(new HashSet<String>(Arrays.asList(data.split(" "))));
+
+    // Remove words that contains numbers
+    for (String word : muligeOrd) {
+      if(word.matches("[1]]")) {
+        muligeOrd.remove(word);
+      }
+    }
 
     System.out.println("muligeOrd = " + muligeOrd);
     nulstil();

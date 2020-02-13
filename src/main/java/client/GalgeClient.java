@@ -13,7 +13,7 @@ public class GalgeClient {
 
     public static void main(String[] args) throws Exception {
 
-        boolean testEnvironment = true;
+        boolean testEnvironment = false;
 
         IGalgeLogik spil = null;
         IUserAuth auth = null;
