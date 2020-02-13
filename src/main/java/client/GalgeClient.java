@@ -37,10 +37,10 @@ public class GalgeClient {
 
         String GAMEURL, AUTHURL;
         if (testEnvironment) {
+            System.out.println("Der spilles på localhost......");
             AUTHURL = urlPrefix + LOCAL_ENV + ":" + AUTHPORT + "/userauth?wsdl";
             GAMEURL = urlPrefix + LOCAL_ENV + ":" + GAMEPORT + "/galgespil?wsdl";
         } else {
-            System.out.println("Der spilles på localhost......");
             AUTHURL = urlPrefix + PROD_ENV + ":" + AUTHPORT + "/userauth?wsdl";
             GAMEURL = urlPrefix + PROD_ENV + ":" + GAMEPORT + "/galgespil?wsdl";
         }
