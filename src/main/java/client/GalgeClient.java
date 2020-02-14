@@ -136,6 +136,7 @@ public class GalgeClient {
                             break;
                         }
                     } else if (spil.erSpilletTabt()) {
+                        System.out.println(graphics.getTheMan(spil.getAntalForkerteBogstaver()-1));
                         System.out.println("Du har desværre tabt spillet " + user.fornavn);
                         System.out.println("Ordet var:" + spil.getOrdet());
 

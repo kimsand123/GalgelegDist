@@ -7,6 +7,17 @@ public class HangManGraphics {
 
     List<String> hangMen = new ArrayList<String>();
 
+    String man0 =   "..xxxxxxxx...\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n"+
+            "..x..........\n";
+
     String man1 =   "..xxxxxxxx...\n"+
             "..x......x...\n"+
             "..x.....x.x..\n"+
@@ -22,7 +33,7 @@ public class HangManGraphics {
             "..x......x...\n"+
             "..x.....x.x..\n"+
             "..x......x...\n"+
-            "..x......X...\n"+
+            "..x......x...\n"+
             "..x......x...\n"+
             "..x......x...\n"+
             "..x......x...\n"+
@@ -33,7 +44,7 @@ public class HangManGraphics {
             "..x......x...\n"+
             "..x.....x.x..\n"+
             "..x......x...\n"+
-            "..x...x..X...\n"+
+            "..x...x..x...\n"+
             "..x....xxx...\n"+
             "..x......x...\n"+
             "..x......x...\n"+
@@ -44,7 +55,7 @@ public class HangManGraphics {
             "..x......x...\n"+
             "..x.....x.x..\n"+
             "..x......x...\n"+
-            "..x...x..X..x\n"+
+            "..x...x..x..x\n"+
             "..x....xxxxx.\n"+
             "..x......x...\n"+
             "..x......x...\n"+
@@ -56,7 +67,7 @@ public class HangManGraphics {
             "..x......x...\n"+
             "..x.....x.x..\n"+
             "..x......x...\n"+
-            "..x...x..X..x\n"+
+            "..x...x..x..x\n"+
             "..x....xxxxx.\n"+
             "..x......x...\n"+
             "..x......x...\n"+
@@ -67,7 +78,7 @@ public class HangManGraphics {
                     "..x......x...\n"+
                     "..x.....x.x..\n"+
                     "..x......x...\n"+
-                    "..x...x..X..x\n"+
+                    "..x...x..x..x\n"+
                     "..x....xxxxx.\n"+
                     "..x......x...\n"+
                     "..x......x...\n"+
@@ -76,6 +87,7 @@ public class HangManGraphics {
 
 
     public HangManGraphics(){
+        hangMen.add(man0);
         hangMen.add(man1);
         hangMen.add(man2);
         hangMen.add(man3);
