@@ -59,6 +59,7 @@ public class GalgeClient {
         QName authQname = new QName(nameSpace, authLocalPart);
         Service authService = Service.create(authUrl, authQname);
         auth = authService.getPort(IUserAuth.class);
+        HangManGraphics graphics = new HangManGraphics();
 
 
         Bruger user = null;
@@ -162,9 +163,13 @@ public class GalgeClient {
                     } else {
                         if (spil.erSidsteBogstavKorrekt()) {
                             System.out.println("Bogstavet " + letter + " findes i ordet");
+
+
                         } else {
                             //hangman picture
                             System.out.println("Bogstavet " + letter + " findes ikke i ordet");
+                            System.out.println("antal forkerte bogstaver: "+ spil.getAntalForkerteBogstaver());
+                            System.out.println(graphics.getTheMan(spil.getAntalForkerteBogstaver()-1));
                         }
                         System.out.println("De brugte bogstaver er: " + spil.getBrugteBogstaver());
                         System.out.println("----------------------\n\n");
