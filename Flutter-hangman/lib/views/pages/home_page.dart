@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hangman/model/user.dart';
+import 'package:hangman/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/any_provider.dart';
 import '../base_pages/base_page.dart';
 import '../mixins/appbar_page_mixin.dart';
 
@@ -22,10 +23,10 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
     return Center(
       child: Column(
         children: <Widget>[
-          Text('You wrote this:', style: appTheme().textTheme.display3),
-          Consumer<AnyProvider>(
+          Text('Welcome', style: appTheme().textTheme.display3),
+          Consumer<UserProvider>(
             builder: (context, provider, child) {
-              return Text('${provider.model.modelParamOne}', style: appTheme().textTheme.body2);
+              return Text('${provider.user.username}', style: appTheme().textTheme.display1);
             },
           ),
         ],

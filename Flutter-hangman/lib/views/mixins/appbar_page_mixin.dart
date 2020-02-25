@@ -36,7 +36,6 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
     );
 
     return Scaffold(
-        appBar: appbar,
         body: SingleChildScrollView(
           child: Container(
             width: screenWidth(),

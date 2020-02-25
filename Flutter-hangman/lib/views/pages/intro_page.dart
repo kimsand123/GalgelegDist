@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hangman/model/user.dart';
+import 'package:hangman/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-import '../../model/any_model.dart';
-import '../../providers/any_provider.dart';
 import '../../routing/routing_paths.dart';
 import '../base_pages/base_page.dart';
 import '../components/button.dart';
@@ -14,36 +14,68 @@ class IntroPage extends BasePage {
 }
 
 class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
-  AnyModel model = AnyModel();
-  TextEditingController controller = TextEditingController();
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  User user = User();
+
   
   /*
   We create a model for our provider to pass on to the consumers.
   */
   @override
   Widget body() {
-    return Center(
+    return Container(
+      height: MediaQuery.of(context).size.height,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: appTheme().colorScheme.primary
-              )
-            ),
-            child: TextFormField(
-              controller: controller,
-              decoration: InputDecoration(
-                hintText: 'Write something'
+          SizedBox(),
+          Text('Login', style: appTheme().textTheme.display3),
+          Column(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Color(0x10000000),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  maxLines: 1,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Username'
+                  ),
+                  autocorrect: false,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.done,
+                ),
               ),
-            )
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  color: Color(0x10000000),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                padding: const EdgeInsets.all(10.0),
+                child: TextField(
+                  obscureText: true,
+                  maxLines: 1,
+                  decoration: InputDecoration.collapsed(
+                    hintText: 'Password'
+                  ),
+                  autocorrect: false,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.done,
+                ),
+              ),
+            ],
           ),
+          
           Button(
             onPressed: () {
-              model.modelParamOne = controller.text;
-              Provider.of<AnyProvider>(context, listen: false).setModel(model);
+              user.username = usernameController.text;
+              user.password = passwordController.text;
+              Provider.of<UserProvider>(context, listen: false).setUser(user);
               Navigator.pushNamed(context, homePageRoute);
             },
           ),
@@ -64,6 +96,7 @@ class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
   @override
   void dispose() {
     super.dispose();
-    controller.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
   }  
 }

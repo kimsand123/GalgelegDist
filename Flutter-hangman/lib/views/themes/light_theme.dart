@@ -7,17 +7,17 @@ Edit the Theme of the app here
 class LightTheme {
   static ThemeData themeData = ThemeData(
     colorScheme: ColorScheme(
-          primary: Color(0xFF2D2D2D),
-          primaryVariant: Color(0xFFCCCCCC),
-          secondary: Color(0xFF3D3D3D),
-          secondaryVariant: Color(0xFF1D1D1D),
+          primary: Color(0xFF8950E6),
+          primaryVariant: Color(0xFF4B4453),
+          secondary: Color(0xFF00A1FF),
+          secondaryVariant: Color(0xFF3896B6),
           surface: Color(0xFFFFFFFF),
           background: Color(0xFFFFFFFF),
           error: Color(0xFFA83232),
           onPrimary: Color(0xFFFFFFFF),
-          onSecondary: Color(0xFF2D2D2D),
+          onSecondary: Color(0xFFFFFFFF),
           onSurface: Color(0xFFFFFFFF),
-          onBackground: Color(0xFF2D2D2D),
+          onBackground: Color(0xFFFFFFFF),
           onError: Color(0xFFFFFFFF), 
           brightness: Brightness.light,
         ),
@@ -75,6 +75,6 @@ class LightTheme {
         ),
       ),
     scaffoldBackgroundColor: Color(0xFFFFFFFF),
-    buttonColor: Color(0xFF00AAF3)
+    buttonColor: Color(0xFF0096B0)
   );
 }
