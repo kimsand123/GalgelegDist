@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hangman/model/user.dart';
 import 'package:hangman/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -26,7 +25,11 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
           Text('Welcome', style: appTheme().textTheme.display3),
           Consumer<UserProvider>(
             builder: (context, provider, child) {
-              return Text('${provider.user.username}', style: appTheme().textTheme.display1);
+              return Column(
+                children: [ 
+                  Text('${provider.user.username}', style: appTheme().textTheme.body2),
+                  Text('\'${provider.user.alias}\'', style: appTheme().textTheme.body1)
+              ]);
             },
           ),
         ],

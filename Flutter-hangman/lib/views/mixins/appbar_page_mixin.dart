@@ -35,17 +35,20 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
       backgroundColor: appTheme().colorScheme.primary,
     );
 
-    return Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            width: screenWidth(),
-            constraints: BoxConstraints(
-                minHeight: screenHeight() -
-                    appbar.preferredSize.height -
-                    kToolbarHeight),
-            child: body(),
+    return GestureDetector(
+      onTap: (){FocusScope.of(context).requestFocus(FocusNode());},
+      child: Scaffold(
+          body: SingleChildScrollView(
+            child: Container(
+              width: screenWidth(),
+              constraints: BoxConstraints(
+                  minHeight: screenHeight() -
+                      appbar.preferredSize.height -
+                      kToolbarHeight),
+              child: body(),
+            ),
           ),
-        ),
+      ),
     );
   }
 

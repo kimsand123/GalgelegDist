@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:hangman/model/user.dart';
 import 'package:hangman/providers/user_provider.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../routing/routing_paths.dart';
@@ -18,7 +21,6 @@ class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
   TextEditingController passwordController = TextEditingController();
   User user = User();
 
-  
   /*
   We create a model for our provider to pass on to the consumers.
   */
@@ -41,6 +43,7 @@ class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
                 margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
+                  controller: usernameController,
                   maxLines: 1,
                   decoration: InputDecoration.collapsed(
                     hintText: 'Username'
@@ -58,6 +61,7 @@ class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
                 margin: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
+                  controller: passwordController,
                   obscureText: true,
                   maxLines: 1,
                   decoration: InputDecoration.collapsed(
@@ -73,9 +77,7 @@ class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
           
           Button(
             onPressed: () {
-              user.username = usernameController.text;
-              user.password = passwordController.text;
-              Provider.of<UserProvider>(context, listen: false).setUser(user);
+              login();
               Navigator.pushNamed(context, homePageRoute);
             },
           ),
@@ -98,5 +100,24 @@ class _IntroPageState extends BasePageState <IntroPage> with AppbarPage {
     super.dispose();
     usernameController.dispose();
     passwordController.dispose();
+  }
+
+  void login() async {
+    var response;
+    var apiUrl = 'http://130.225.170.204:8970/';
+
+    try {
+      response = await http.get(apiUrl);
+      if(response.statusCode == 200) {
+        userFromJson(response.body).forEach((u) {
+          if(u.username == 'Kim') user = u;
+        });
+        Provider.of<UserProvider>(context, listen: false).setUser(user);
+      } else {
+        print("Got error status code: " + response.statusCode);
+      }
+    } catch(exception) {
+      print(exception);
+    }
   }  
 }
