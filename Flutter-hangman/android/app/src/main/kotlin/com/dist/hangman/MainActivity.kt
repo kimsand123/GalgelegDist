@@ -1,4 +1,4 @@
-package com.dtu.disthangman
+package com.dist.hangman
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

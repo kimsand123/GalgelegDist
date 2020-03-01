@@ -23,7 +23,7 @@ class Button extends StatelessWidget {
                 .button
                 .copyWith(color: Theme.of(context).buttonColor)),
         onPressed: this.onPressed,
-        color: Theme.of(context).buttonColor,
+        color: Colors.transparent,
         disabledColor: Theme.of(context).disabledColor,
         elevation: 0,
         highlightElevation: 0,

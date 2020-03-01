@@ -184,7 +184,6 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
             {
               Text(
                 "Ok",
-                style: appTheme().textTheme.button.copyWith(color: Colors.red),
               ): null,
             },
           );
@@ -201,7 +200,6 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           {
             Text(
               "Ok",
-              style: appTheme().textTheme.button.copyWith(color: Colors.red),
             ): null,
           },
         );

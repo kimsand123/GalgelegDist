@@ -18,13 +18,13 @@ class User {
   User({this.username, this.password, this.token});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
-        username: json["name"],
+        username: json["username"],
         password: json["password"],
         token: json['token'],
       );
 
   Map<String, dynamic> toJson() => {
-        "name": username,
+        "username": username,
         "password": password,
         'token': this.token,
       };
