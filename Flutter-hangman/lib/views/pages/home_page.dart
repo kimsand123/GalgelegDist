@@ -24,57 +24,65 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
   }
 
   @override
-  Widget title() => null;
+  Widget title() => Text('Home');
 
   @override
   Widget body() {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        Column(
-          children: <Widget>[
-            Text('Welcome', style: appTheme().textTheme.display3),
-            Consumer<UserProvider>(
-              builder: (context, provider, child) {
-                return Column(
-                  children: <Widget>[
-                    Text('${provider.user.username}',
-                        style: appTheme().textTheme.display1),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Token:\n${provider.user.token}',
-                      style: appTheme().textTheme.subhead,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                );
-              },
-            ),
-            Container(
-              height: 300,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Button(
-                      title: 'Start game',
-                      onPressed: _loading ? null : _startGame),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Button(
-                      title: 'Log out', onPressed: _loading ? null : _logout),
-                ],
+        Container(
+          height: contentHeight,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Consumer<UserProvider>(
+                builder: (context, provider, child) {
+                  return Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                            '${provider.user.username} is logged in with token: ',
+                            style: appTheme().textTheme.caption),
+                      ),
+                      Text(
+                        '${provider.user.token}',
+                        style: appTheme().textTheme.subhead,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  );
+                },
               ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-          ],
+              Container(
+                height: 300,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Button(
+                        title: 'Start game',
+                        onPressed: _loading ? null : _startGame),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Button(
+                        title: 'Log out', onPressed: _loading ? null : _logout),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+            ],
+          ),
         ),
         Visibility(
-          child: CircularProgressIndicator(),
+          child: Container(
+              height: contentHeight,
+              width: screenWidth(),
+              alignment: Alignment.center,
+              child: CircularProgressIndicator()),
           visible: _loading,
         ),
       ],

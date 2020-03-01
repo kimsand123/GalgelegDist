@@ -13,6 +13,7 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
   double screenWidth() => MediaQuery.of(context).size.width;
   double screenHeight() => MediaQuery.of(context).size.height;
   ThemeData appTheme() => Theme.of(context);
+  double contentHeight;
 
   @override
   void initState() {
@@ -32,23 +33,19 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
       title: title(),
     );
 
-    double _minHeightWithAppBar =
-        screenHeight() - appbar.preferredSize.height - kToolbarHeight;
-    double _minHeightWithOutAppBar = screenHeight();
+    contentHeight = screenHeight() - appbar.preferredSize.height - 24;
 
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
       child: Scaffold(
-        appBar: title() == null ? null : appbar,
+        appBar: appbar,
         body: SingleChildScrollView(
           child: Container(
             width: screenWidth(),
             constraints: BoxConstraints(
-                minHeight: title() == null
-                    ? _minHeightWithOutAppBar
-                    : _minHeightWithAppBar),
+                minHeight: screenHeight() - appbar.preferredSize.height - 24),
             child: body(),
           ),
         ),

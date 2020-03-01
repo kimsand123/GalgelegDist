@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hangman/model/user.dart';
 import 'package:hangman/providers/user_provider.dart';
@@ -33,8 +34,12 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
     _autoValidate = false;
     _userNameController = TextEditingController();
     _passwordController = TextEditingController();
-    _userNameController.text = "s160198";
-    _passwordController.text = "densikkrestekode";
+
+    if (kDebugMode) {
+      _userNameController.text = "s160198";
+      _passwordController.text = "densikkrestekode";
+    }
+
     _userNameFocus = FocusNode();
     _passwordFocus = FocusNode();
   }
@@ -55,16 +60,18 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
   @override
   Widget body() {
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
       children: <Widget>[
         Container(
-          height: MediaQuery.of(context).size.height,
+          height: contentHeight,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              SizedBox(),
-              Text('Please login with your credentials below',
-                  style: appTheme().textTheme.caption),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Please login with your credentials below',
+                    style: appTheme().textTheme.caption),
+              ),
               Form(
                 key: _formKey,
                 autovalidate: _autoValidate,
@@ -138,19 +145,20 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
                         's170423 - (Sebastian Sørensen) \n' +
                         's160198 - (Niklaes Jacobsen) \n' +
                         '\nThis app was made with Flutter <3',
-                    style: appTheme().textTheme.caption.copyWith(fontSize: 10),
+                    style: appTheme().textTheme.caption,
                     textAlign: TextAlign.center,
                   ),
                 ],
-              ),
-              SizedBox(
-                height: 40,
               ),
             ],
           ),
         ),
         Visibility(
-          child: CircularProgressIndicator(),
+          child: Container(
+              height: contentHeight,
+              width: screenWidth(),
+              alignment: Alignment.center,
+              child: CircularProgressIndicator()),
           visible: _loading,
         ),
       ],
