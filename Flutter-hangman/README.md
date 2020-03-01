@@ -1,3 +1,3 @@
-# Boilerplate app
+# Hangman app
 
-Boilerplate for a flutter app, with provider/consumer pattern.
+Hangman client for a distributed small hangman game.

@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:hangman/model/user.dart';
 
-
 class UserProvider extends ChangeNotifier {
   User _user = User();
 

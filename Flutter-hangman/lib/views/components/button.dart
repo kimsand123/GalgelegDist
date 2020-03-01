@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
+  final String _title;
   final onPressed;
-  Button({this.onPressed});
-  
+  Button({String title, VoidCallback onPressed})
+      : this._title = title ?? '',
+        this.onPressed = onPressed;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,22 +14,22 @@ class Button extends StatelessWidget {
       height: 55,
       margin: EdgeInsets.symmetric(horizontal: 40.0, vertical: 80.0),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(context).buttonColor,
-          width: 2
-        ),
-        borderRadius: BorderRadius.circular(10.0)
-      ),
+          border: Border.all(color: Theme.of(context).buttonColor, width: 2),
+          borderRadius: BorderRadius.circular(10.0)),
       child: MaterialButton(
-        child: Text('Login', style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).buttonColor)),
+        child: Text(_title,
+            style: Theme.of(context)
+                .textTheme
+                .button
+                .copyWith(color: Theme.of(context).buttonColor)),
         onPressed: this.onPressed,
-        color: Colors.transparent,
+        color: Theme.of(context).buttonColor,
+        disabledColor: Theme.of(context).disabledColor,
         elevation: 0,
         highlightElevation: 0,
         highlightColor: Color(0x05000000),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0)
-        ),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
     );
   }

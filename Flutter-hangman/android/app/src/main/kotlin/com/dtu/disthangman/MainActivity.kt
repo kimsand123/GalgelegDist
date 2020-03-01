@@ -1,4 +1,4 @@
-package com.example.test_cupertino
+package com.dtu.disthangman
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

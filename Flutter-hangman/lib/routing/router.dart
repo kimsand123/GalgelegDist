@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../views/pages/home_page.dart';
-import '../views/pages/intro_page.dart';
+import '../views/pages/login_page.dart';
 import 'routing_paths.dart';
 
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      
       case introPageRoute:
         return MaterialPageRoute(
-          settings: RouteSettings(name: introPageRoute),
-          builder: (_) => IntroPage()
-        );
+            settings: RouteSettings(name: introPageRoute),
+            builder: (_) => LoginPage());
 
       case homePageRoute:
         return MaterialPageRoute(
-          settings: RouteSettings(name: homePageRoute),
-          builder: (_) => HomePage()
-        );
-
+            settings: RouteSettings(name: homePageRoute),
+            builder: (_) => HomePage());
 
       default:
         return MaterialPageRoute(
@@ -32,7 +28,6 @@ class Router {
                         'The page \'${settings.name}\' \nIs not implemented yet.')),
               );
             });
-
     }
   }
 }
