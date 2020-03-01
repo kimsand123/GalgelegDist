@@ -7,9 +7,9 @@ import 'routing_paths.dart';
 class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
-      case introPageRoute:
+      case loginPageRoute:
         return MaterialPageRoute(
-            settings: RouteSettings(name: introPageRoute),
+            settings: RouteSettings(name: loginPageRoute),
             builder: (_) => LoginPage());
 
       case homePageRoute:

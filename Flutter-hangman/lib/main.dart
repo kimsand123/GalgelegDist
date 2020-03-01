@@ -7,16 +7,10 @@ import 'routing/router.dart';
 import 'routing/routing_paths.dart';
 import 'views/themes/light_theme.dart';
 
-void main() => runApp(
-  MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (context) => UserProvider()
-      )
-    ],
-    child: Hangman(),
-  )
-);
+void main() => runApp(MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => UserProvider())],
+      child: Hangman(),
+    ));
 
 class Hangman extends StatelessWidget {
   @override
@@ -26,7 +20,7 @@ class Hangman extends StatelessWidget {
       title: 'Hangman app',
       theme: LightTheme.themeData,
       onGenerateRoute: Router.generateRoute,
-      initialRoute: introPageRoute,
+      initialRoute: loginPageRoute,
     );
   }
 }

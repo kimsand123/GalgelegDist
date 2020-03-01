@@ -47,9 +47,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
   }
 
   @override
-  Widget title() {
-    return null;
-  }
+  Widget title() => Text('Login');
 
   /*
   We create a model for our provider to pass on to the consumers.
@@ -59,17 +57,12 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        Visibility(
-          child: CircularProgressIndicator(),
-          visible: _loading,
-        ),
         Container(
           height: MediaQuery.of(context).size.height,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               SizedBox(),
-              Text('Login', style: appTheme().textTheme.display3),
               Text('Please login with your credentials below',
                   style: appTheme().textTheme.caption),
               Form(
@@ -130,10 +123,35 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
                   ],
                 ),
               ),
-              Button(
-                  title: 'Login', onPressed: _loading ? null : _validateInputs),
+              Column(
+                children: <Widget>[
+                  Button(
+                      title: 'Login',
+                      onPressed: _loading ? null : _validateInputs),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    'The app is made during the course: 62597 at DTU \n' +
+                        '\nCreated by: \n ' +
+                        's163290 - (Kim Bossen) \n' +
+                        's170423 - (Sebastian Sørensen) \n' +
+                        's160198 - (Niklaes Jacobsen) \n' +
+                        '\nThis app was made with Flutter <3',
+                    style: appTheme().textTheme.caption.copyWith(fontSize: 10),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+              ),
             ],
           ),
+        ),
+        Visibility(
+          child: CircularProgressIndicator(),
+          visible: _loading,
         ),
       ],
     );

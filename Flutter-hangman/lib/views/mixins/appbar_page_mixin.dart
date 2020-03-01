@@ -29,25 +29,29 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
     var appbar = AppBar(
       actions: <Widget>[action()],
       centerTitle: true,
-      elevation: 5,
-      textTheme: Theme.of(context).textTheme,
       title: title(),
-      backgroundColor: appTheme().colorScheme.primary,
     );
 
+    double _minHeightWithAppBar =
+        screenHeight() - appbar.preferredSize.height - kToolbarHeight;
+    double _minHeightWithOutAppBar = screenHeight();
+
     return GestureDetector(
-      onTap: (){FocusScope.of(context).requestFocus(FocusNode());},
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
       child: Scaffold(
-          body: SingleChildScrollView(
-            child: Container(
-              width: screenWidth(),
-              constraints: BoxConstraints(
-                  minHeight: screenHeight() -
-                      appbar.preferredSize.height -
-                      kToolbarHeight),
-              child: body(),
-            ),
+        appBar: title() == null ? null : appbar,
+        body: SingleChildScrollView(
+          child: Container(
+            width: screenWidth(),
+            constraints: BoxConstraints(
+                minHeight: title() == null
+                    ? _minHeightWithOutAppBar
+                    : _minHeightWithAppBar),
+            child: body(),
           ),
+        ),
       ),
     );
   }
