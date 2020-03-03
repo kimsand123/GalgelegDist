@@ -11,10 +11,10 @@ public class GalgeServer {
         System.out.println("Galgeleg server is running..\n\n");
 
 
-        UserAuthImpl userAuthImpl = new UserAuthImpl();
+      /*  UserAuthImpl userAuthImpl = new UserAuthImpl();
         System.out.println("Publicerer UserAuth via SOAP");
         Endpoint.publish("http://[::]:9999/userauth", userAuthImpl);
-        System.out.println("UserAuth server is running...\n\n");
+        System.out.println("UserAuth server is running...\n\n");*/
 
     }
 }

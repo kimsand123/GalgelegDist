@@ -82,6 +82,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
   private void opdaterSynligtOrd() {
     synligtOrd = "";
     spilletErVundet = true;
+
     for (int n = 0; n < ordet.length(); n++) {
       String bogstav = ordet.substring(n, n + 1);
       if (brugteBogstaver.contains(bogstav)) {
@@ -91,6 +92,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
         spilletErVundet = false;
       }
     }
+    System.out.println("Spillet er vundet = " + spilletErVundet);
   }
 
   public void gætBogstav(String bogstav) {
@@ -113,6 +115,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
         spilletErTabt = true;
       }
     }
+    System.out.println("spillet er tabt: "+ spilletErTabt);
     opdaterSynligtOrd();
   }
 

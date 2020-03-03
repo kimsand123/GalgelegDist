@@ -1,7 +1,5 @@
 package server;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -20,40 +18,34 @@ import java.net.URL;
 import java.util.ArrayList;
 import javax.xml.ws.Service;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.UUID;
-
-import static io.javalin.apibuilder.ApiBuilder.path;
 
 @WebService(endpointInterface = "interfaces.IEntryPoint")
-public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
+public class EntryPointImpl implements IEntryPoint {
 
     //Setting up the clientpart of this service.
     // Connection to the gameserver on Jacobs machine.
     static final String nameSpace = "http://server/";
     static final String gameLocalPart = "GalgeLogikImplService";
     private static String gameIP = "130.225.170.204:9875";
+    private static String localGAMEURL = "http://localhost:9898/galgespil?wsdl";
     private static String GAMEURL = "http://130.225.170.204:9898/galgespil?wsdl";
     private IGalgeLogik spil;
 
     private List<String> inGamers = new ArrayList<String>();
 
-
     public EntryPointImpl() throws MalformedURLException, RemoteException {
         super();
 
-        URL gameurl = new URL(GAMEURL);
+        URL gameurl = new URL(localGAMEURL);
         QName gameQname = new QName(nameSpace, gameLocalPart);
         Service gameservice = Service.create(gameurl, gameQname);
         spil = gameservice.getPort(IGalgeLogik.class);
-        System.out.println("gameURL = " + GAMEURL);
+        System.out.println("gameURL = " + localGAMEURL);
 
 
         //Setting up Javalin Endpoints
-
         Javalin restServer = Javalin.create().start(9875);
-
 
         //Til debugging or logging, should probably write to a file instead.
         restServer.before(ctx -> {
@@ -164,6 +156,7 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
 
     //SOAP methods
     public ArrayList<String> epGetBrugteBogstaver(String token) {
+        System.out.println("Soap getbrugtebogstaver token: "+token);
         if (checkGamerToken(token)) {
             return spil.getBrugteBogstaver();
         }
@@ -171,6 +164,7 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
     }
 
     public String epGetSynligtOrd(String token) {
+        System.out.println("Soap getsynligtord token: "+token);
         if (checkGamerToken(token)) {
             return spil.getSynligtOrd();
         }
@@ -178,6 +172,7 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
     }
 
     public String epGetOrdet(String token) {
+        System.out.println("Soap getordet token: "+token);
         if (checkGamerToken(token)) {
             return spil.getOrdet();
         }
@@ -185,6 +180,7 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
     }
 
     public int epGetAntalForkerteBogstaver(String token) {
+        System.out.println("Soap antalforkertebogstaver token: "+token);
         if (checkGamerToken(token)) {
             return spil.getAntalForkerteBogstaver();
         }
@@ -192,6 +188,8 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
     }
 
     public int epErSidsteBogstavKorrekt(String token) {
+        System.out.println("Soap ersidstebogstavkorrekt token: "+token);
+
         if (checkGamerToken(token)) {
             boolean janej;
             janej = spil.erSidsteBogstavKorrekt();
@@ -205,9 +203,12 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
     }
 
     public int epErSpilletVundet(String token) {
+        System.out.println("Soap erspilletvundet token: "+token);
         if (checkGamerToken(token)) {
             boolean janej;
+
             janej = spil.erSpilletVundet();
+            System.out.println("Er spillet vundet " + janej);
             if (janej) {
                 return 1;
             } else {
@@ -218,9 +219,11 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
     }
 
     public int epErSpilletTabt(String token) {
+        System.out.println("Soap erspillettabt token: "+token);
         if (checkGamerToken(token)) {
             boolean janej;
             janej = spil.erSpilletTabt();
+            System.out.println("Er spillet tabt " + janej);
             if (janej) {
                 return 1;
             } else {
@@ -236,13 +239,16 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
         }
     }
 
-    public void epGætBogstav(String token, String bogstav) {
+    public void epGætBogstav(String token, String letter) {
+        System.out.println("Soap gætbogstav token: "+token + " bogstav: "+ letter);
         if (checkGamerToken(token)) {
-            spil.gætBogstav(bogstav);
+            spil.gætBogstav(letter);
         }
     }
 
     public void logStatus(String token) {
+        System.out.println("Soap getbrugtebogstaver token: "+token);
+
         if (checkGamerToken(token)) {
             spil.logStatus();
         }
@@ -254,11 +260,14 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
         }
     }
 
-    public void epLogOff(String token) {
+    public String epLogOff(String token) {
+        System.out.println("Soap logoff token: " + token);
         inGamers.remove(token);
+        return "Du har nu logget af";
     }
 
     public String epLogOn(String username, String password) throws UnirestException {
+        System.out.println("Soap logon username: "+username + " password "+ password);
 
         System.out.println("restLogon brugernavn: " + username + " password " + password);
         String url = "http://130.225.170.204:8970/auth/";
@@ -405,10 +414,9 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
 
     private void restLogOff(Context ctx) {
         String token = ctx.formParam("token");
-        inGamers.remove(token);
         System.out.println("restLogoff token: " + token);
-        epLogOff(token);
-        ctx.status(200).result("Du er logget af spillet");
+        String besked = epLogOff(token);
+        ctx.status(200).result(besked);
     }
 }
 

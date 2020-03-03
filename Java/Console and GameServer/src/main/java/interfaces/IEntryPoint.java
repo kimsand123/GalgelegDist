@@ -46,5 +46,5 @@ public interface IEntryPoint {
     String epLogOn(String username, String password) throws UnirestException;
 
     @WebMethod
-    void epLogOff(String token);
+    String epLogOff(String token);
 }
