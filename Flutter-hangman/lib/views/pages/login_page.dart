@@ -206,12 +206,12 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           print(
               'An error occured: \n${response.statusCode} - ${response.reasonPhrase}');
           var errorResponse;
-          if(response.statusCode == 403) {
+          if (response.statusCode == 403) {
             errorResponse = json.decode(response.body)["error"];
           } else {
             errorResponse = 'Something went wrong';
           }
-          
+
           showPopupDialog(
             context,
             'An error occured',
@@ -219,7 +219,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
             {
               Text(
                 "Ok",
-              ): null,
+              ): () {},
             },
           );
         }
@@ -231,13 +231,16 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
         showPopupDialog(
           context,
           'An error occured',
-          '$error',
+          'Try to check your internet connection, and try again',
           {
             Text(
               "Ok",
-            ): null,
+            ): () {},
           },
         );
+        setState(() {
+          _loading = false;
+        });
       }
     } else {
       setState(() {
