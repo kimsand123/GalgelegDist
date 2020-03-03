@@ -69,6 +69,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              Text('Login', style: appTheme().textTheme.display3.copyWith(fontWeight: FontWeight.w700)),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text('Please login with your credentials below',
@@ -197,7 +198,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
         http.Response response = await HttpRemote().login(user);
 
         if (response.statusCode == 200) {
-          user.token = response.body;
+          user.token = json.decode(response.body)["token"];
           Provider.of<UserProvider>(context, listen: false).setUser(user);
 
           Navigator.pushNamedAndRemoveUntil(context, homePageRoute,

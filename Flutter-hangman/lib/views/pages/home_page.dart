@@ -106,15 +106,6 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
 
   void _startGame() {
     //TODO: Implement gameflow
-    showPopupDialog(
-      context,
-      'This is not implemented yet',
-      'Relax dude',
-      {
-        Text(
-          "Ok, i will relax",
-        ): null,
-      },
-    );
+    Navigator.pushReplacementNamed(context, gamePageRoute);
   }
 }

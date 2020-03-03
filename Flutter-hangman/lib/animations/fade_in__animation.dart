@@ -12,7 +12,7 @@ class FadeInRTLAnimation extends StatelessWidget {
   Widget build(BuildContext context) {
     final tween = MultiTrackTween([
       Track("opacity")
-          .add(Duration(milliseconds: 200), Tween(begin: 0.0, end: 1.0)),
+          .add(Duration(milliseconds: 50), Tween(begin: 0.0, end: 1.0)),
       Track("scale").add(
           Duration(milliseconds: 1000), Tween(begin: 0.0, end: 1.0),
           curve: Curves.elasticOut)
@@ -20,15 +20,12 @@ class FadeInRTLAnimation extends StatelessWidget {
 
     return ControlledAnimation(
       curve: Curves.easeOut,
-      delay: Duration(milliseconds: (300 * delay).round()),
       duration: tween.duration,
       tween: tween,
       child: child,
-      builderWithChild: (context, child, animation) => Opacity(
-            opacity: animation["opacity"],
-            child: Transform.scale(
-                scale: animation["scale"],
-          ),
-    ));
+      builderWithChild: (context, child, animation) => Transform.scale(
+          scale: animation["scale"],
+          child: child,
+          ));
   }
 }

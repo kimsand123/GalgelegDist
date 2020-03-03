@@ -15,14 +15,14 @@ class Button extends StatelessWidget {
       height: 55,
       margin: EdgeInsets.symmetric(horizontal: 40.0),
       decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).buttonColor, width: 2),
+          border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
           borderRadius: BorderRadius.circular(10.0)),
       child: MaterialButton(
         child: Text(_title,
             style: Theme.of(context)
                 .textTheme
                 .button
-                .copyWith(color: Theme.of(context).buttonColor)),
+                .copyWith(color: Theme.of(context).colorScheme.secondary)),
         onPressed: this.onPressed,
         color: Colors.transparent,
         disabledColor: Theme.of(context).disabledColor,

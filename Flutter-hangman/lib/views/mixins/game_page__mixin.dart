@@ -9,7 +9,7 @@ The mixin also provides device height and width as well as the apptheme.
 All is available when implementing the mixin.
 */
 
-mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
+mixin GamePageMixin<Page extends BasePage> on BasePageState<Page> {
   double screenWidth() => MediaQuery.of(context).size.width;
   double screenHeight() => MediaQuery.of(context).size.height;
   ThemeData appTheme() => Theme.of(context);
@@ -33,20 +33,30 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            width: screenWidth(),
-            constraints: BoxConstraints(
-                minHeight: screenHeight() - 24),
-            child: body(),
+      child: Stack(
+        children:[
+          Scaffold(
+          body: SingleChildScrollView(
+            child: Container(
+              width: screenWidth(),
+              constraints: BoxConstraints(
+                  minHeight: screenHeight() - 24),
+              child: body(),
+            ),
           ),
         ),
-      ),
+        Positioned(
+          width: MediaQuery.of(context).size.width,
+          top: MediaQuery.of(context).size.height - MediaQuery.of(context).size.height * 0.3,
+          child: keyboard()
+        )
+      ]),
     );
   }
 
   Widget body();
+
+  Widget keyboard() => Container();
 
   Widget action() => Container();
 }
