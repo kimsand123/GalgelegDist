@@ -24,7 +24,7 @@ SECRET_KEY = '@v@r0rs=29w5$j991#j+04vk^r63lqmnn#+m(=29elit8mxf#v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '[::]', 'dist.saluton.dk', '130.225.170.204']
+ALLOWED_HOSTS = ['localhost', '[::]', 'dist.saluton.dk', '130.225.170.204', '127.0.0.1']
 
 # Application definition
 

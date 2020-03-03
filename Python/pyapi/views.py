@@ -2,6 +2,7 @@
 import json
 import uuid
 
+from django.http import HttpResponse, JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -24,11 +25,20 @@ def login(request):
 
     url = 'http://javabog.dk:9901/brugeradmin?wsdl'
     client = Client(url)
-    client.service.hentBruger(username, password)
+    try:
+        client.service.hentBruger(username, password)
+        token = uuid.uuid1()
+        return Response(token, status=status.HTTP_200_OK)
+    except Exception as e:
+        if 'Forkert brugernavn eller adgangskode for' in e.__str__():
+            data = {
+                'status': status.HTTP_403_FORBIDDEN,
+                'error': 'Wrong password or username',
+            }
+            return Response(data, status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    token = uuid.uuid1()
-
-    return Response(token, status=status.HTTP_200_OK)
 
 
 @api_view(['GET', 'POST'])
