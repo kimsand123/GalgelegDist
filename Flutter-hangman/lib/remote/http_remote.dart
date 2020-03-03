@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
@@ -17,10 +18,10 @@ class HttpRemote {
   /// /auth/logon/
   ///
   Future<http.Response> login(User user) {
-    String url = serverUrl + '/auth/logon/';
+    String url = serverUrl + '/auth/logon';
 
-    debugPrint('HttpRemote - login with body: $user');
-    return http.post(url, headers: standardHeaders, body: user);
+    debugPrint('HttpRemote - login with body: ${jsonEncode(user)}');
+    return http.post(url, headers: standardHeaders, body: jsonEncode(user));
   }
 
   ///
@@ -28,12 +29,12 @@ class HttpRemote {
   /// /auth/logoff/
   ///
   Future<http.Response> logoff(User user) {
-    String url = serverUrl + '/auth/logoff/';
+    String url = serverUrl + '/auth/logoff';
 
     Map<String, String> token = _tokenFromUser(user);
 
     debugPrint('HttpRemote - logoff with body: $token');
-    return http.post(url, headers: standardHeaders, body: token);
+    return http.post(url, headers: standardHeaders, body: jsonEncode(token));
   }
 
   ///
@@ -41,7 +42,7 @@ class HttpRemote {
   /// /bogstaver/gaet/
   ///
   Future<http.Response> guessLetter(User user, String letter) {
-    String url = serverUrl + '/bogstaver/gaet/';
+    String url = serverUrl + '/bogstaver/gaet';
     String token = user.token;
 
     Map<String, dynamic> sendObject = {
@@ -50,7 +51,8 @@ class HttpRemote {
     };
 
     debugPrint('HttpRemote - guessLetter with body: $sendObject');
-    return http.post(url, headers: standardHeaders, body: sendObject);
+    return http.post(url,
+        headers: standardHeaders, body: jsonEncode(sendObject));
   }
 
   ///

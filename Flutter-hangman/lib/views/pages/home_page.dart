@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hangman/model/user.dart';
 import 'package:hangman/providers/user_provider.dart';
+import 'package:hangman/remote/http_remote.dart';
 import 'package:hangman/routing/routing_paths.dart';
 import 'package:provider/provider.dart';
 
@@ -88,13 +90,15 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
     );
   }
 
-  void _logout() {
-//TODO Send logout to server to remove token from active-list
+  Future<void> _logout() async {
+    //TODO Send logout to server to remove token from active-list
+    User user = Provider.of<UserProvider>(context, listen: false).user;
+
     setState(() {
       _loading = true;
     });
 
-    Future.delayed(Duration(seconds: 1)).then((value) {
+    HttpRemote().logoff(user).then((value) {
       Navigator.pushNamedAndRemoveUntil(context, loginPageRoute,
           ModalRoute.withName(Navigator.defaultRouteName));
       setState(() {
@@ -104,7 +108,6 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
   }
 
   void _startGame() {
-    //TODO: Implement gameflow
-    Navigator.pushReplacementNamed(context, gamePageRoute);
+    Navigator.pushNamed(context, gamePageRoute);
   }
 }

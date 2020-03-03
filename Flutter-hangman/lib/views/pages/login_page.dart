@@ -66,7 +66,11 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text('Login', style: appTheme().textTheme.display3.copyWith(fontWeight: FontWeight.w700)),
+              Text('Login',
+                  style: appTheme()
+                      .textTheme
+                      .display3
+                      .copyWith(fontWeight: FontWeight.w700)),
               SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Form(
                 key: _formKey,
@@ -190,8 +194,11 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
       try {
         http.Response response = await HttpRemote().login(user);
 
+        print(
+            'Auth: \n${response.statusCode} - ${response.reasonPhrase} - ${response.body}');
+
         if (response.statusCode == 200) {
-          user.token = json.decode(response.body)["token"];
+          user.token = json.decode(response.body);
           Provider.of<UserProvider>(context, listen: false).setUser(user);
 
           Navigator.pushNamedAndRemoveUntil(context, homePageRoute,
