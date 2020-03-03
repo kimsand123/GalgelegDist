@@ -26,7 +26,10 @@ class _HangmanKeyboardState extends State<HangmanKeyboard> {
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary,
-        borderRadius: BorderRadius.circular(15.0)
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(10.0),
+          topRight: Radius.circular(10.0)
+        )
       ),
       height: MediaQuery.of(context).size.height * 0.3,
       child: Column(children: [

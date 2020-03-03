@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hangman/providers/user_provider.dart';
 import 'package:hangman/routing/routing_paths.dart';
-import 'package:hangman/views/components/popupComponent.dart';
 import 'package:provider/provider.dart';
 
 import '../base_pages/base_page.dart';

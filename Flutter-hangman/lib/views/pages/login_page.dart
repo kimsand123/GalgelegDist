@@ -54,11 +54,8 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
   }
 
   @override
-  Widget title() => Text('Login');
+  Widget title() => Text('');
 
-  /*
-  We create a model for our provider to pass on to the consumers.
-  */
   @override
   Widget body() {
     return Stack(
@@ -70,11 +67,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               Text('Login', style: appTheme().textTheme.display3.copyWith(fontWeight: FontWeight.w700)),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Please login with your credentials below',
-                    style: appTheme().textTheme.caption),
-              ),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Form(
                 key: _formKey,
                 autovalidate: _autoValidate,
@@ -92,7 +85,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
                         controller: _userNameController,
                         maxLines: 1,
                         decoration:
-                            InputDecoration.collapsed(hintText: 'Username'),
+                            InputDecoration.collapsed(hintText: 's170000'),
                         autocorrect: false,
                         keyboardType: TextInputType.text,
                         validator: _validateEmail,
@@ -117,7 +110,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
                         obscureText: true,
                         maxLines: 1,
                         decoration:
-                            InputDecoration.collapsed(hintText: 'Password'),
+                            InputDecoration.collapsed(hintText: '************'),
                         autocorrect: false,
                         keyboardType: TextInputType.visiblePassword,
                         textInputAction: TextInputAction.done,
