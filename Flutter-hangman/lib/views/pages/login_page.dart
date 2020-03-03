@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hangman/model/user.dart';
@@ -203,10 +205,17 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
         } else {
           print(
               'An error occured: \n${response.statusCode} - ${response.reasonPhrase}');
+          var errorResponse;
+          if(response.statusCode == 403) {
+            errorResponse = json.decode(response.body)["error"];
+          } else {
+            errorResponse = 'Something went wrong';
+          }
+          
           showPopupDialog(
             context,
             'An error occured',
-            '${response.statusCode} - ${response.reasonPhrase}\n${response.body}',
+            '$errorResponse',
             {
               Text(
                 "Ok",
