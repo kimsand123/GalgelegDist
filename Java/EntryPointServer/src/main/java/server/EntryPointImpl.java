@@ -1,5 +1,6 @@
 package server;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -13,12 +14,14 @@ import org.json.JSONObject;
 
 import javax.jws.WebService;
 import javax.xml.namespace.QName;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.xml.ws.Service;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Map;
 
 @WebService(endpointInterface = "interfaces.IEntryPoint")
 public class EntryPointImpl implements IEntryPoint {
@@ -37,11 +40,11 @@ public class EntryPointImpl implements IEntryPoint {
     public EntryPointImpl() throws MalformedURLException, RemoteException {
         super();
 
-        URL gameurl = new URL(localGAMEURL);
+        URL gameurl = new URL(GAMEURL);
         QName gameQname = new QName(nameSpace, gameLocalPart);
         Service gameservice = Service.create(gameurl, gameQname);
         spil = gameservice.getPort(IGalgeLogik.class);
-        System.out.println("gameURL = " + localGAMEURL);
+        System.out.println("gameURL = " + GAMEURL);
 
 
         //Setting up Javalin Endpoints
@@ -49,7 +52,7 @@ public class EntryPointImpl implements IEntryPoint {
 
         //Til debugging or logging, should probably write to a file instead.
         restServer.before(ctx -> {
-            System.out.println("EntryPointServer got request " + ctx.method() + " on url " + ctx.url() + " with parameters " + ctx.queryParamMap() + " and shape " + ctx.formParamMap());
+            System.out.println("EntryPointServer got request " + ctx.method() + " on url " + ctx.url() + " with parameters " + ctx.queryParamMap() + ", formParam: " + ctx.formParamMap() + ", and body:" + ctx.body());
         });
 
         restServer.get("/", ctx -> ctx.contentType("text/html; charset=utf-8")
@@ -388,35 +391,80 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     private void restGaetBogstav(Context ctx) {
-        String token = ctx.formParam("token");
-        String letter = ctx.formParam("letter");
-        System.out.println("restLogoff token: " + token + " letter: " + letter);
-        //TODO interface til gætBogstav skal returnere om det gik godt eller dårligt med token check.
-        if (checkGamerToken(token)) {
-            epGætBogstav(token, letter);
-        } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+        String body = ctx.body();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            // convert JSON string to Map
+            Map<String, String> map = mapper.readValue(body, Map.class);
+
+            System.out.println("test " + map.get("username"));
+
+            String token = map.get("token");
+            String letter = map.get("letter");
+
+            System.out.println("restLogoff token: " + token + " letter: " + letter);
+            //TODO interface til gætBogstav skal returnere om det gik godt eller dårligt med token check.
+            if (checkGamerToken(token)) {
+                epGætBogstav(token, letter);
+            } else {
+                //TODO depending on which REST organisation the feedback should be adapted
+                ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ctx.status(500).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
         }
     }
 
     private void restLogOn(Context ctx) throws UnirestException {
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
-        String token = epLogOn(username, password);
-        if (!token.equals(null)) {
-            ctx.json(token);
-        } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+        String body = ctx.body();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            // convert JSON string to Map
+            Map<String, String> map = mapper.readValue(body, Map.class);
+
+            System.out.println("test " + map.get("username"));
+
+            String username = map.get("username");
+            String password = map.get("password");
+
+            String token = epLogOn(username, password);
+
+            if (!token.equals(null)) {
+                ctx.json(token);
+            } else {
+                //TODO depending on which REST organisation the feedback should be adapted
+                ctx.status(403).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ctx.status(500).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
         }
     }
 
     private void restLogOff(Context ctx) {
-        String token = ctx.formParam("token");
-        System.out.println("restLogoff token: " + token);
-        String besked = epLogOff(token);
-        ctx.status(200).result(besked);
+        String body = ctx.body();
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            // convert JSON string to Map
+            Map<String, String> map = mapper.readValue(body, Map.class);
+
+            String token = map.get("token");
+
+            String besked = epLogOff(token);
+
+            ctx.status(200).result(besked);
+            System.out.println("restLogoff token: " + token);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            ctx.status(500).result("Medsend venligst token, for at logge ud");
+        }
     }
 }
 
