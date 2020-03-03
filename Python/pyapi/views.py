@@ -26,11 +26,11 @@ def login(request):
         return Response(token, status=status.HTTP_200_OK)
     except Exception as e:
         if 'Forkert brugernavn eller adgangskode for' in e.__str__():
-            data = {
+            json_error = {
                 'status': status.HTTP_403_FORBIDDEN,
                 'error': 'Wrong password or username',
             }
-            return Response(data, status=status.HTTP_403_FORBIDDEN)
+            return Response(data=json_error, status=status.HTTP_403_FORBIDDEN)
         else:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -44,14 +44,14 @@ def hero_list(request):
     if request.method == 'GET':
         heroes = Hero.objects.all()
         serializer = HeroSerializer(heroes, many=True)
-        return Response(serializer.data)
+        return Response(data=serializer.data)
 
     elif request.method == 'POST':
         serializer = HeroSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -72,8 +72,8 @@ def hero_detail(request, name):
         serializer = HeroSerializer(hero, data=request.post)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data=serializer.data)
+        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         hero.delete()
