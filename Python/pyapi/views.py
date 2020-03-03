@@ -23,7 +23,10 @@ def login(request):
     try:
         client.service.hentBruger(username, password)
         token = uuid.uuid1()
-        return Response(token, status=status.HTTP_200_OK)
+        json_token = {
+            'token': token
+        }
+        return Response(data=json_token, status=status.HTTP_200_OK)
     except Exception as e:
         if 'Forkert brugernavn eller adgangskode for' in e.__str__():
             json_error = {
