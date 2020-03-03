@@ -62,7 +62,7 @@ public class EntryPointImpl extends UnicastRemoteObject implements IEntryPoint {
 
         restServer.get("/", ctx -> ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>Velkommen til Online-Galgeleg<br/>\n<br/>\n" +
-                        "Du skulle tage at logge ind og spille med."));
+                        "Du skulle tage at logge ind og spille med. Der findes en consol og en flutter app til at spille spillet"));
         // Enten den her organisation
 
 

@@ -1,7 +1,7 @@
 package client;
 
 import brugerautorisation.data.Bruger;
-import interfaces.IGalgeLogik;
+import interfaces.IEntryPoint;
 import interfaces.IUserAuth;
 
 import javax.xml.namespace.QName;
@@ -15,13 +15,14 @@ public class GalgeClient {
 
         boolean testEnvironment = false;
 
-        IGalgeLogik spil = null;
+        IEntryPoint spil = null;
         IUserAuth auth = null;
         Scanner input = new Scanner(System.in);
         String brugernavn = "";
         String password = "";
         boolean loginOK;
         boolean isGameOver = false;
+        HangManGraphics graphics = new HangManGraphics();
 
 
 
@@ -30,19 +31,20 @@ public class GalgeClient {
         final String PROD_ENV = "130.225.170.204";
         final String nameSpace = "http://server/";
         final String gameLocalPart = "GalgeLogikImplService";
-        final String authLocalPart = "UserAuthImplService";
-        final int AUTHPORT = 9999;
-        final int GAMEPORT = 9898;
+        final String authLocalPart = "EntryPointImplService";
+        final int AUTHPORT = 9876;
+        final int GAMEPORT = 9876;
 
-
+        String token;
         String GAMEURL, AUTHURL;
         if (testEnvironment) {
             System.out.println("Der spilles på localhost......");
-            AUTHURL = urlPrefix + LOCAL_ENV + ":" + AUTHPORT + "/userauth?wsdl";
-            GAMEURL = urlPrefix + LOCAL_ENV + ":" + GAMEPORT + "/galgespil?wsdl";
+            AUTHURL = urlPrefix + LOCAL_ENV + ":" + AUTHPORT + "/entrypoint?wsdl";
+            GAMEURL = urlPrefix + LOCAL_ENV + ":" + GAMEPORT + "/entrypoint?wsdl";
         } else {
-            AUTHURL = urlPrefix + PROD_ENV + ":" + AUTHPORT + "/userauth?wsdl";
-            GAMEURL = urlPrefix + PROD_ENV + ":" + GAMEPORT + "/galgespil?wsdl";
+            System.out.println("Der spilles gennem EntryPointServer......");
+            AUTHURL = urlPrefix + PROD_ENV + ":" + AUTHPORT + "/entrypoint?wsdl";
+            GAMEURL = urlPrefix + PROD_ENV + ":" + GAMEPORT + "/entrypoint?wsdl";
         }
 
         System.out.println("AUTHURL: " + AUTHURL);
@@ -52,15 +54,14 @@ public class GalgeClient {
         URL gameurl = new URL(GAMEURL);
         QName gameQname = new QName(nameSpace, gameLocalPart);
         Service gameservice = Service.create(gameurl, gameQname);
-        spil = gameservice.getPort(IGalgeLogik.class);
+        spil = gameservice.getPort(IEntryPoint.class);
 
-
-        URL authUrl = new URL(AUTHURL);
+/*        URL authUrl = new URL(AUTHURL);
         QName authQname = new QName(nameSpace, authLocalPart);
         Service authService = Service.create(authUrl, authQname);
         auth = authService.getPort(IUserAuth.class);
         HangManGraphics graphics = new HangManGraphics();
-
+*/
 
         Bruger user = null;
         do{
@@ -68,12 +69,15 @@ public class GalgeClient {
             brugernavn = input.nextLine();
             System.out.print("\nIndtast password: ");
             password = input.nextLine();
-            if (auth.login(brugernavn, password)){
+            token = spil.epLogOn(brugernavn, password);
+            if (token!=null ){
                 loginOK = true;
-                user = auth.getUser(brugernavn);
+                //TODO skal laves så man kan skrive navnet ud.
+                //user = auth.getUser(brugernavn);
 
                 System.out.println("\n\n* * * * * * * * * *");
-                System.out.println("Velkommen til spillet " + user.fornavn + " " + user.efternavn + "!");
+                System.out.println("Velkommen til spillet");
+               // System.out.println("Velkommen til spillet " + user.fornavn + " " + user.efternavn + "!");
                 System.out.println("* * * * * * * * * *\n\n");
             }else{
                 System.out.println("Du har ikke indtastet rigtigt brugernavn og/eller password. Prøv igen.");
@@ -82,7 +86,7 @@ public class GalgeClient {
         }while(!loginOK);
 
         if(testEnvironment) {
-            System.out.println("ordet er: " + spil.getOrdet());
+            System.out.println("ordet er: " + spil.epGetOrdet(token));
         }
 
         String letter;
@@ -92,7 +96,7 @@ public class GalgeClient {
         while (!isGameOver) {
 
             //Hent synligt ord og vis det.
-            visibleWord = spil.getSynligtOrd();
+            visibleWord = spil.epGetSynligtOrd(token);
             System.out.println("Det synlige ord er: " + visibleWord);
 
             letter = "";
@@ -109,16 +113,17 @@ public class GalgeClient {
                 } else {
 
                     //Send input, og check om bogstavet var korrekt
-                    spil.gætBogstav(letter);
-                    if (spil.erSpilletVundet()) {
+                    spil.epGætBogstav(token, letter);
+
+                    if (spil.epErSpilletVundet(token)==1) {
                         System.out.println("Tillykke " + user.fornavn + ", du har vundet spillet");
-                        System.out.println("Ordet var: " + spil.getOrdet() + "\n\n");
+                        System.out.println("Ordet var: " + spil.epGetOrdet(token) + "\n\n");
 
                         System.out.println("Vil du gerne spille igen " + user.fornavn + "? [y/n]");
                         endGameResponse = input.nextLine().toLowerCase();
                         System.out.println("");
 
-                        spil.nulstil();
+
                         if(endGameResponse.equals("y")) {
                             System.out.println("* * * * * * * * * *");
                             System.out.println("Nyt spil starter nu!");
@@ -135,16 +140,15 @@ public class GalgeClient {
                             isGameOver = true;
                             break;
                         }
-                    } else if (spil.erSpilletTabt()) {
-                        System.out.println(graphics.getTheMan(spil.getAntalForkerteBogstaver()-1));
+                    } else if (spil.epErSpilletTabt(token)==1) {
+                        System.out.println(graphics.getTheMan(spil.epGetAntalForkerteBogstaver(token)-1));
                         System.out.println("Du har desværre tabt spillet " + user.fornavn);
-                        System.out.println("Ordet var:" + spil.getOrdet());
+                        System.out.println("Ordet var:" + spil.epGetOrdet(token));
 
                         System.out.println("Vil du gerne spille igen " + user.fornavn + "? [y/n]");
                         endGameResponse = input.nextLine().toLowerCase();
                         System.out.println("\n");
 
-                        spil.nulstil();
                         if(endGameResponse.equals("y")) {
                             System.out.println("* * * * * * * * * *");
                             System.out.println("Nyt spil starter nu!");
@@ -152,7 +156,9 @@ public class GalgeClient {
                             isGameOver = false;
                         } else if(endGameResponse.equals("n")) {
                             System.out.println("* * * * * * * * * *");
-                            System.out.println("Ok, farvel " + user.fornavn);
+                            System.out.println("Ok, farvel");
+                            spil.epLogOff(token);
+                           // System.out.println("Ok, farvel " + user.fornavn);
                             System.out.println("* * * * * * * * * *");
                             isGameOver = true;
                             break;
@@ -162,17 +168,17 @@ public class GalgeClient {
                             break;
                         }
                     } else {
-                        if (spil.erSidsteBogstavKorrekt()) {
+                        if (spil.epErSidsteBogstavKorrekt(token)==1) {
                             System.out.println("Bogstavet " + letter + " findes i ordet");
 
 
                         } else {
                             //hangman picture
                             System.out.println("Bogstavet " + letter + " findes ikke i ordet");
-                            System.out.println("antal forkerte bogstaver: "+ spil.getAntalForkerteBogstaver());
-                            System.out.println(graphics.getTheMan(spil.getAntalForkerteBogstaver()-1));
+                            System.out.println("antal forkerte bogstaver: "+ spil.epGetAntalForkerteBogstaver(token));
+                            System.out.println(graphics.getTheMan(spil.epGetAntalForkerteBogstaver(token)-1));
                         }
-                        System.out.println("De brugte bogstaver er: " + spil.getBrugteBogstaver());
+                        System.out.println("De brugte bogstaver er: " + spil.epGetBrugteBogstaver(token));
                         System.out.println("----------------------\n\n");
                     }
                 }
