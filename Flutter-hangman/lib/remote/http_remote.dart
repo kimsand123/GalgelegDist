@@ -19,10 +19,10 @@ class HttpRemote {
   /// /auth/logon/
   ///
   Future<http.Response> login(User user) {
-    String url = "http://" + serverUrl + '/auth/logon';
+    Uri uri = Uri.http(serverUrl, '/auth/logon');
 
     debugPrint('** HttpRemote - login with body: ${jsonEncode(user)}');
-    return http.post(url, headers: standardHeaders, body: jsonEncode(user));
+    return http.post(uri, headers: standardHeaders, body: jsonEncode(user));
   }
 
   ///
@@ -30,12 +30,12 @@ class HttpRemote {
   /// /auth/logoff/
   ///
   Future<http.Response> logoff(User user) {
-    String url = "http://" + serverUrl + '/auth/logoff';
+    Uri uri = Uri.http(serverUrl, '/auth/logoff');
 
     Map<String, String> sendMap = _tokenMapFromUser(user);
 
     debugPrint('** HttpRemote - logoff with body: $sendMap');
-    return http.post(url, headers: standardHeaders, body: jsonEncode(sendMap));
+    return http.post(uri, headers: standardHeaders, body: jsonEncode(sendMap));
   }
 
   ///
@@ -155,15 +155,16 @@ class HttpRemote {
   Future<http.Response> resetGame(User user) {
     Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/spillet/nulstil/', sendMap);
+    Uri uri = Uri.http(serverUrl, '/spillet/nulstil/');
 
     debugPrint('** HttpRemote - resetGame with body: $sendMap');
-    return http.get(uri, headers: standardHeaders);
+    return http.post(uri, headers: standardHeaders, body: jsonEncode(sendMap));
   }
 
   Future<Game> getGameData(User user) async {
     Game game = Game();
-    game.usedLetters = (await usedLetters(user)).body;
+    game.usedLetters =
+        jsonDecode((await usedLetters(user)).body) as List<dynamic>;
     game.numberOfWrongLetters = (await numberOfWrongLetters(user)).body;
     game.wasLastLetterCorrect =
         ((await wasLastLetterCorrect(user)).body == '0' ? false : true);

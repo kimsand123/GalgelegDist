@@ -73,15 +73,17 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
               height: screenHeight() * 0.2,
               color: appTheme().colorScheme.primary,
               child: FutureBuilder(
-                future: remote.getGameData(user),
+                future: _loadData(),
                 builder: (BuildContext context, AsyncSnapshot<Game> snapshot) {
                   if (snapshot.hasData && snapshot != null) {
                     game = snapshot.data;
+
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: _generateListOfText(),
                     );
                   } else {
+                    game.visibleWord = 'Loading';
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: _generateListOfText(),
@@ -94,13 +96,33 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
     );
   }
 
+  Future<Game> _loadData() async {
+    Game game = await remote.getGameData(user).then((game) {
+      _gameOverPopup(game);
+      return game;
+    });
+
+    debugPrint("Guess the word: ${game.word}");
+    return game;
+  }
+
   List<Widget> _generateListOfText() {
+    String usedLetters = '';
+
+    if (game.usedLetters != null) {
+      game.usedLetters.forEach((letter) {
+        usedLetters += '$letter, ';
+      });
+    }
+
     return [
-      Text('${game.visibleWord}',
-          style: appTheme()
-              .textTheme
-              .display3
-              .copyWith(fontWeight: FontWeight.w700, color: Colors.white)),
+      Text(
+        '${game.visibleWord}',
+        style: appTheme()
+            .textTheme
+            .display3
+            .copyWith(fontWeight: FontWeight.w700, color: Colors.white),
+      ),
       Divider(
         color: Colors.white,
       ),
@@ -111,9 +133,14 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
             'Used letters:',
             style: appTheme().textTheme.body1.copyWith(color: Colors.white),
           ),
-          Text(
-            '${game.usedLetters}',
-            style: appTheme().textTheme.body1.copyWith(color: Colors.white),
+          Container(
+            width: screenWidth() / 3,
+            child: Text(
+              '$usedLetters',
+              style: appTheme().textTheme.body1.copyWith(color: Colors.white),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+            ),
           ),
         ],
       ),
@@ -121,7 +148,7 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            'Number of tries:',
+            'Number of wrong letters:',
             style: appTheme().textTheme.body1.copyWith(color: Colors.white),
           ),
           Text(
@@ -177,64 +204,82 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
               Text(
                 "Try again",
               ): () {
-                remote.resetGame(user);
+                remote.resetGame(user).then((response) {
+                  setState(() {
+                    game.visibleWord = 'Loading';
+                    _loading = false;
+                  });
+                });
               },
               Text(
                 "End game",
-              ): () {
-                remote.resetGame(user);
+              ): () async {
+                await remote.resetGame(user);
                 Navigator.pop(context);
               },
             },
           );
         }
       }
-
-      if (game.isGameLost != null && game.isGameWon != null) {
-        if (game.isGameWon) {
-          showPopupDialog(
-            context,
-            'The game is over',
-            'The word was: ${game.word} \nYou won!',
-            {
-              Text(
-                "Start over",
-              ): () {
-                remote.resetGame(user);
-              },
-              Text(
-                "End game",
-              ): () {
-                remote.resetGame(user);
-                Navigator.pop(context);
-              },
-            },
-          );
-        } else if (game.isGameLost) {
-          showPopupDialog(
-            context,
-            'The game is over',
-            'The word was: ${game.word} \nYou lost!',
-            {
-              Text(
-                "Start over",
-              ): () {
-                remote.resetGame(user);
-              },
-              Text(
-                "End game",
-              ): () {
-                remote.resetGame(user);
-                Navigator.pop(context);
-              },
-            },
-          );
-        }
-      }
-
-      setState(() {
-        _loading = false;
-      });
     });
+
+    setState(() {
+      game.visibleWord = 'Loading';
+      _loading = false;
+    });
+  }
+
+  _gameOverPopup(Game game) {
+    if (game.isGameLost != null && game.isGameWon != null) {
+      if (game.isGameWon) {
+        showPopupDialog(
+          context,
+          'The game is over',
+          'The word was: ${game.word} \nYou won!',
+          {
+            Text(
+              "Start over",
+            ): () async {
+              remote.resetGame(user).then((response) {
+                setState(() {
+                  game.visibleWord = 'Loading';
+                  _loading = false;
+                });
+              });
+            },
+            Text(
+              "End game",
+            ): () async {
+              await remote.resetGame(user);
+              Navigator.pop(context);
+            },
+          },
+        );
+      } else if (game.isGameLost) {
+        showPopupDialog(
+          context,
+          'The game is over',
+          'The word was: ${game.word} \nYou lost!',
+          {
+            Text(
+              "Start over",
+            ): () async {
+              remote.resetGame(user).then((response) {
+                setState(() {
+                  game.visibleWord = 'Loading';
+                  _loading = false;
+                });
+              });
+            },
+            Text(
+              "End game",
+            ): () async {
+              await remote.resetGame(user);
+              Navigator.pop(context);
+            },
+          },
+        );
+      }
+    }
   }
 }
