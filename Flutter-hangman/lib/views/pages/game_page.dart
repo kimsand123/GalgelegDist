@@ -15,62 +15,34 @@ class GamePage extends BasePage {
 }
 
 class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
+  bool _loading;
   HttpRemote remote;
   Game game;
+
+  @override
+  void initState() {
+    super.initState();
+    _loading = false;
+    game = Game(visibleWord: 'Loading word');
+    remote = HttpRemote();
+    user = Provider.of<UserProvider>(context, listen: false).user;
+  }
 
   @override
   Widget title() => Text('');
   User user;
 
-  Future<void> guess(letter) async {
-    print("** Guessing letter: $letter");
-    await remote.guessLetter(user, letter);
-
-    if (game.isGameLost != null && game.isGameWon != null) {
-      if (game.isGameWon) {
-        showPopupDialog(
-          context,
-          'The game is over',
-          'The word was: ${game.word} \nYou won!',
-          {
-            Text(
-              "Start over",
-            ): () {
-              remote.resetGame(user);
-            },
-            Text(
-              "End game",
-            ): () {
-              remote.resetGame(user);
-              Navigator.pop(context);
-            },
-          },
-        );
-      } else {
-        showPopupDialog(
-          context,
-          'The game is over',
-          'The word was: ${game.word} \nYou lost!',
-          {
-            Text(
-              "Start over",
-            ): () {
-              remote.resetGame(user);
-            },
-            Text(
-              "End game",
-            ): () {
-              remote.resetGame(user);
-              Navigator.pop(context);
-            },
-          },
-        );
-      }
-    }
-
-    setState(() {
-      //Update screen
-    });
+  @override
+  Widget loadingOverlay() {
+    return Visibility(
+      child: Container(
+          height: screenHeight(),
+          width: screenWidth(),
+          color: Colors.white54,
+          alignment: Alignment.center,
+          child: CircularProgressIndicator()),
+      visible: _loading,
+    );
   }
 
   @override
@@ -80,14 +52,6 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
         guess(letter);
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    game = Game();
-    remote = HttpRemote();
-    user = Provider.of<UserProvider>(context, listen: false).user;
   }
 
   @override
@@ -179,5 +143,60 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
         ],
       ),
     ];
+  }
+
+  Future<void> guess(letter) async {
+    setState(() {
+      _loading = true;
+    });
+
+    print("** Guessing letter: $letter");
+    await remote.guessLetter(user, letter);
+
+    if (game.isGameLost != null && game.isGameWon != null) {
+      if (game.isGameWon) {
+        showPopupDialog(
+          context,
+          'The game is over',
+          'The word was: ${game.word} \nYou won!',
+          {
+            Text(
+              "Start over",
+            ): () {
+              remote.resetGame(user);
+            },
+            Text(
+              "End game",
+            ): () {
+              remote.resetGame(user);
+              Navigator.pop(context);
+            },
+          },
+        );
+      } else if (game.isGameLost) {
+        showPopupDialog(
+          context,
+          'The game is over',
+          'The word was: ${game.word} \nYou lost!',
+          {
+            Text(
+              "Start over",
+            ): () {
+              remote.resetGame(user);
+            },
+            Text(
+              "End game",
+            ): () {
+              remote.resetGame(user);
+              Navigator.pop(context);
+            },
+          },
+        );
+      }
+    }
+
+    setState(() {
+      _loading = false;
+    });
   }
 }

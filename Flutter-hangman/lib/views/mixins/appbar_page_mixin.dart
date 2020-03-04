@@ -33,18 +33,25 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            width: screenWidth(),
-            constraints: BoxConstraints(
-                minHeight: screenHeight() - 24),
-            child: body(),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          Scaffold(
+            body: SingleChildScrollView(
+              child: Container(
+                width: screenWidth(),
+                constraints: BoxConstraints(minHeight: screenHeight() - 24),
+                child: body(),
+              ),
+            ),
           ),
-        ),
+          loadingOverlay(),
+        ],
       ),
     );
   }
+
+  Widget loadingOverlay() => Container();
 
   Widget body();
 

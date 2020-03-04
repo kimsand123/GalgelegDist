@@ -57,6 +57,18 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
   Widget title() => Text('');
 
   @override
+  Widget loadingOverlay() {
+    return Visibility(
+      child: Container(
+          height: contentHeight,
+          width: screenWidth(),
+          alignment: Alignment.center,
+          child: CircularProgressIndicator()),
+      visible: _loading,
+    );
+  }
+
+  @override
   Widget body() {
     return Stack(
       alignment: Alignment.topCenter,
@@ -152,14 +164,6 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
               ),
             ],
           ),
-        ),
-        Visibility(
-          child: Container(
-              height: contentHeight,
-              width: screenWidth(),
-              alignment: Alignment.center,
-              child: CircularProgressIndicator()),
-          visible: _loading,
         ),
       ],
     );

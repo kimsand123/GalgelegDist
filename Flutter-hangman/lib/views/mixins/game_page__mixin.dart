@@ -33,7 +33,7 @@ mixin GamePageMixin<Page extends BasePage> on BasePageState<Page> {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Stack(children: [
+      child: Stack(alignment: Alignment.topCenter, children: [
         Scaffold(
           body: SingleChildScrollView(
             child: Container(
@@ -44,13 +44,17 @@ mixin GamePageMixin<Page extends BasePage> on BasePageState<Page> {
           ),
         ),
         Positioned(
-            width: MediaQuery.of(context).size.width,
-            top: MediaQuery.of(context).size.height -
-                MediaQuery.of(context).size.height * 0.3,
-            child: keyboard())
+          width: MediaQuery.of(context).size.width,
+          top: MediaQuery.of(context).size.height -
+              MediaQuery.of(context).size.height * 0.3,
+          child: keyboard(),
+        ),
+        loadingOverlay(),
       ]),
     );
   }
+
+  Widget loadingOverlay() => Container();
 
   Widget body();
 
