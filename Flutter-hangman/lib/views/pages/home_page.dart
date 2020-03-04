@@ -43,12 +43,11 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                            '${provider.user.username} is logged in with token: ',
-                            style: appTheme().textTheme.caption),
+                        child: Text('Welcome ${provider.user.username}!',
+                            style: appTheme().textTheme.display1),
                       ),
                       Text(
-                        '${provider.user.token}',
+                        'Click to start the hangman-game',
                         style: appTheme().textTheme.subhead,
                         textAlign: TextAlign.center,
                       ),
