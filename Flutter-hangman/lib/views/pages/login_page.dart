@@ -38,8 +38,9 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
     _passwordController = TextEditingController();
 
     if (kDebugMode) {
-      _userNameController.text = "s160198";
-      _passwordController.text = "densikkrestekode";
+      User user = Provider.of<UserProvider>(context, listen: false).user;
+      _userNameController.text = user.username ?? '';
+      _passwordController.text = user.password ?? '';
     }
 
     _userNameFocus = FocusNode();
@@ -214,7 +215,8 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           if (response.statusCode == 403) {
             errorResponse = json.decode(response.body)["error"];
           } else {
-            errorResponse = 'Something went wrong';
+            errorResponse =
+                'Something went wrong, please check your credentials or internet connection';
           }
 
           showPopupDialog(

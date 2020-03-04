@@ -3,6 +3,7 @@ import 'package:hangman/model/game.dart';
 import 'package:hangman/model/user.dart';
 import 'package:hangman/providers/user_provider.dart';
 import 'package:hangman/remote/http_remote.dart';
+import 'package:hangman/routing/routing_paths.dart';
 import 'package:hangman/views/base_pages/base_page.dart';
 import 'package:hangman/views/components/hangman_keyboard.dart';
 import 'package:hangman/views/components/popupComponent.dart';
@@ -151,52 +152,89 @@ class _GamePageState extends BasePageState<GamePage> with GamePageMixin {
     });
 
     print("** Guessing letter: $letter");
-    await remote.guessLetter(user, letter);
-
-    if (game.isGameLost != null && game.isGameWon != null) {
-      if (game.isGameWon) {
-        showPopupDialog(
-          context,
-          'The game is over',
-          'The word was: ${game.word} \nYou won!',
-          {
-            Text(
-              "Start over",
-            ): () {
-              remote.resetGame(user);
+    remote.guessLetter(user, letter).then((response) {
+      if (response.statusCode != 200) {
+        if (response.statusCode == 403) {
+          showPopupDialog(
+            context,
+            'Your login has expired, please login again',
+            '',
+            {
+              Text(
+                "Go to login",
+              ): () {
+                Navigator.pushNamedAndRemoveUntil(context, homePageRoute,
+                    ModalRoute.withName(Navigator.defaultRouteName));
+              },
             },
-            Text(
-              "End game",
-            ): () {
-              remote.resetGame(user);
-              Navigator.pop(context);
+          );
+        } else {
+          showPopupDialog(
+            context,
+            'An error occured',
+            '',
+            {
+              Text(
+                "Try again",
+              ): () {
+                remote.resetGame(user);
+              },
+              Text(
+                "End game",
+              ): () {
+                remote.resetGame(user);
+                Navigator.pop(context);
+              },
             },
-          },
-        );
-      } else if (game.isGameLost) {
-        showPopupDialog(
-          context,
-          'The game is over',
-          'The word was: ${game.word} \nYou lost!',
-          {
-            Text(
-              "Start over",
-            ): () {
-              remote.resetGame(user);
-            },
-            Text(
-              "End game",
-            ): () {
-              remote.resetGame(user);
-              Navigator.pop(context);
-            },
-          },
-        );
+          );
+        }
       }
-    }
 
-    setState(() {
-      _loading = false;
+      if (game.isGameLost != null && game.isGameWon != null) {
+        if (game.isGameWon) {
+          showPopupDialog(
+            context,
+            'The game is over',
+            'The word was: ${game.word} \nYou won!',
+            {
+              Text(
+                "Start over",
+              ): () {
+                remote.resetGame(user);
+              },
+              Text(
+                "End game",
+              ): () {
+                remote.resetGame(user);
+                Navigator.pop(context);
+              },
+            },
+          );
+        } else if (game.isGameLost) {
+          showPopupDialog(
+            context,
+            'The game is over',
+            'The word was: ${game.word} \nYou lost!',
+            {
+              Text(
+                "Start over",
+              ): () {
+                remote.resetGame(user);
+              },
+              Text(
+                "End game",
+              ): () {
+                remote.resetGame(user);
+                Navigator.pop(context);
+              },
+            },
+          );
+        }
+      }
+
+      setState(() {
+        _loading = false;
+      });
     });
   }
 }
