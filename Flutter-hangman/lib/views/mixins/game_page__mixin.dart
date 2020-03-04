@@ -33,23 +33,21 @@ mixin GamePageMixin<Page extends BasePage> on BasePageState<Page> {
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Stack(
-        children:[
-          Scaffold(
+      child: Stack(children: [
+        Scaffold(
           body: SingleChildScrollView(
             child: Container(
               width: screenWidth(),
-              constraints: BoxConstraints(
-                  minHeight: screenHeight() - 24),
+              constraints: BoxConstraints(minHeight: screenHeight() - 24),
               child: body(),
             ),
           ),
         ),
         Positioned(
-          width: MediaQuery.of(context).size.width,
-          top: MediaQuery.of(context).size.height - MediaQuery.of(context).size.height * 0.3,
-          child: keyboard()
-        )
+            width: MediaQuery.of(context).size.width,
+            top: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).size.height * 0.3,
+            child: keyboard())
       ]),
     );
   }
