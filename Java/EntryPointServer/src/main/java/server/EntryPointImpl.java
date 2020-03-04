@@ -112,57 +112,9 @@ public class EntryPointImpl implements IEntryPoint {
 
     }
 
-/*
-        //Eller den her organisation
-        restServer.get("/:token/brugtebogstaver", ctx ->{
-                    System.out.println("beforebrugtebogstaver" + ctx.pathParam("token"));
-                    restBrugteBogstaver(ctx);
-        });
-        restServer.get("/:token/synligtord", ctx -> {
-            System.out.println("before synligtord "+ ctx.pathParam("token"));
-            restSynligtOrd(ctx);
-
-        });
-        restServer.get("/:token/ordet", ctx -> {
-            System.out.println("Before ordet " + ctx.pathParam("token"));
-            restOrdet(ctx);
-        });
-        restServer.get("/:token/antalforkertebogstaver", ctx -> {
-            System.out.println("before antalforkertebogstaver "+ ctx.pathParam("token"));
-            restAntalForkerteBogstaver(ctx);
-        });
-        restServer.get("/:token/sidstebogstavkorrekt", ctx -> {
-            System.out.println("before sidsteBogstavKorrekt "+ ctx.pathParam("token"));
-            restSidsteBogstavKorrekt(ctx);
-        } );
-        restServer.get("/:token/vundet", ctx -> {
-            System.out.println("before vundet "+ ctx.pathParam("token"));
-            restVundet(ctx);
-        });
-        restServer.get("/:token/tabt", ctx -> {
-            System.out.println("before tabt "+ ctx.pathParam("token"));
-
-            restTabt(ctx);
-        });
-        restServer.get("/:token/logoff", ctx -> {
-            System.out.println("before logoff "+ ctx.pathParam("token"));
-
-            restLogOff(ctx);
-        });
-        restServer.get("/logon/:username/:password", ctx -> {
-            System.out.println("username " + ctx.pathParam("username") + " password: " + ctx.pathParam("password"));
-            restLogOn(ctx);
-        });
-        restServer.post("/:token/gaet/:letter", ctx -> {
-            System.out.println("token "+ ctx.pathParam("token") + "  letter"+ ctx.pathParam("letter"));
-            restGaetBogstav(ctx);
-        });
-        */
-
-
     //SOAP methods
     public ArrayList<String> epGetBrugteBogstaver(String token) {
-        System.out.println("Soap getbrugtebogstaver token: "+token + "\n");
+        System.out.println("getbrugtebogstaver token: "+token + "\n");
         if (checkGamerToken(token)) {
             return spil.getBrugteBogstaver();
         }
@@ -170,7 +122,7 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public String epGetSynligtOrd(String token) {
-        System.out.println("Soap getsynligtord token: "+token + "\n");
+        System.out.println("getsynligtord token: "+token + "\n");
         if (checkGamerToken(token)) {
             return spil.getSynligtOrd();
         }
@@ -178,7 +130,7 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public String epGetOrdet(String token) {
-        System.out.println("Soap getordet token: "+token + "\n");
+        System.out.println("getordet token: "+token + "\n");
         if (checkGamerToken(token)) {
             return spil.getOrdet();
         }
@@ -186,7 +138,7 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public int epGetAntalForkerteBogstaver(String token) {
-        System.out.println("Soap antalforkertebogstaver token: "+token + "\n");
+        System.out.println("antalforkertebogstaver token: "+token + "\n");
         if (checkGamerToken(token)) {
             return spil.getAntalForkerteBogstaver();
         }
@@ -194,7 +146,7 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public int epErSidsteBogstavKorrekt(String token) {
-        System.out.println("Soap ersidstebogstavkorrekt token: "+token + "\n");
+        System.out.println("ersidstebogstavkorrekt token: "+token + "\n");
 
         if (checkGamerToken(token)) {
             boolean janej;
@@ -209,7 +161,7 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public int epErSpilletVundet(String token) {
-        System.out.println("Soap erspilletvundet token: "+token + "\n");
+        System.out.println("erspilletvundet token: "+token + "\n");
         if (checkGamerToken(token)) {
             boolean janej;
 
@@ -225,7 +177,7 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public int epErSpilletTabt(String token) {
-        System.out.println("Soap erspillettabt token: "+token + "\n");
+        System.out.println("erspillettabt token: "+token + "\n");
         if (checkGamerToken(token)) {
             boolean janej;
             janej = spil.erSpilletTabt();
@@ -240,20 +192,21 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public void epNulstil(String token) {
+        System.out.println("epNulstil token: "+token);
         if (checkGamerToken(token)) {
             spil.nulstil();
         }
     }
 
     public void epGætBogstav(String token, String letter) {
-        System.out.println("Soap gætbogstav token: "+token + " bogstav: "+ letter + "\n");
+        System.out.println("gætbogstav token: "+token + " bogstav: "+ letter + "\n");
         if (checkGamerToken(token)) {
             spil.gætBogstav(letter);
         }
     }
 
     public void logStatus(String token) {
-        System.out.println("Soap getbrugtebogstaver token: "+token + "\n");
+        System.out.println("getbrugtebogstaver token: "+token + "\n");
 
         if (checkGamerToken(token)) {
             spil.logStatus();
@@ -267,13 +220,13 @@ public class EntryPointImpl implements IEntryPoint {
     }
 
     public String epLogOff(String token) {
-        System.out.println("Soap logoff token: " + token + "\n");
+        System.out.println("logoff token: " + token + "\n");
         inGamers.remove(token);
         return "Du har nu logget af";
     }
 
     public String epLogOn(String username, String password) throws UnirestException {
-        System.out.println("Soap logon username: "+username + " password "+ password + "\n");
+        System.out.println("logon username: "+username + " password "+ password + "\n");
 
         String url = "http://130.225.170.204:8970/auth/";
 
@@ -283,8 +236,9 @@ public class EntryPointImpl implements IEntryPoint {
                 .body(body)
                 .asJson();
         JSONObject json = response.getBody().getObject();
-        System.out.println(json.toString());
+
         String token = json.getString("token");
+        System.out.println("gathered token: " + token);
 
         if (token != null) {
             inGamers.add(token);
@@ -299,7 +253,6 @@ public class EntryPointImpl implements IEntryPoint {
     // REST methods
     private void restBrugteBogstaver(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("restBrugteBogstaver token: " + token + "\n");
         List<String> brugteBogstaver;
         brugteBogstaver = epGetBrugteBogstaver(token);
         if (brugteBogstaver != null) {
@@ -313,7 +266,6 @@ public class EntryPointImpl implements IEntryPoint {
 
     private void restOrdet(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("restOrdet token: " + token + "\n");
         String ordet;
         ordet = epGetOrdet(token);
         if (ordet != null) {
@@ -327,7 +279,6 @@ public class EntryPointImpl implements IEntryPoint {
 
     private void restSynligtOrd(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("synligt ord token: " + token + "\n");
         String synligtOrd;
         synligtOrd=epGetSynligtOrd(token);
         if(synligtOrd != null){
@@ -342,7 +293,6 @@ public class EntryPointImpl implements IEntryPoint {
 
     private void restAntalForkerteBogstaver(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("restAntalForkerteBogstaver token: " + token + "\n");
         int antal = epGetAntalForkerteBogstaver(token);
         if (antal > -1) {
             ctx.json(antal);
@@ -355,7 +305,6 @@ public class EntryPointImpl implements IEntryPoint {
 
     private void restSidsteBogstavKorrekt(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("restSidsteBogstavKorrekt token: " + token + "\n");
         int korrekt = epErSidsteBogstavKorrekt(token);
         //TODO clients skal håndtere en int -1=ikke valideret, 0=falsk, 1=true
         if (korrekt > -1) {
@@ -369,7 +318,6 @@ public class EntryPointImpl implements IEntryPoint {
 
     private void restVundet(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("restVundet token: " + token + "\n");
         int vundet = epErSpilletVundet(token);
         if (vundet > -1) {
             ctx.json(vundet);
@@ -381,7 +329,6 @@ public class EntryPointImpl implements IEntryPoint {
 
     private void restTabt(Context ctx) {
         String token = ctx.queryParam("token");
-        System.out.println("resttabt token: " + token + "\n");
         int tabt = epErSpilletTabt(token);
         if (tabt > -1) {
             ctx.json(tabt);
@@ -399,12 +346,9 @@ public class EntryPointImpl implements IEntryPoint {
             // convert JSON string to Map
             Map<String, String> map = mapper.readValue(body, Map.class);
 
-            System.out.println("test " + map.get("username") + "\n");
-
             String token = map.get("token");
             String letter = map.get("letter");
 
-            System.out.println("restLogoff token: " + token + " letter: " + letter + "\n");
             //TODO interface til gætBogstav skal returnere om det gik godt eller dårligt med token check.
             if (checkGamerToken(token)) {
                 epGætBogstav(token, letter);
@@ -426,8 +370,6 @@ public class EntryPointImpl implements IEntryPoint {
         try {
             // convert JSON string to Map
             Map<String, String> map = mapper.readValue(body, Map.class);
-
-            System.out.println("test " + map.get("username") + "\n");
 
             String username = map.get("username");
             String password = map.get("password");
@@ -460,7 +402,6 @@ public class EntryPointImpl implements IEntryPoint {
             String besked = epLogOff(token);
 
             ctx.status(200).result(besked);
-            System.out.println("restLogoff token: " + token + "\n");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -481,7 +422,6 @@ public class EntryPointImpl implements IEntryPoint {
             epNulstil(token);
 
             ctx.status(200);
-            System.out.println("restNulstil token: " + token + "\n");
 
         } catch (IOException e) {
             e.printStackTrace();
