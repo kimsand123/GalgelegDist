@@ -66,12 +66,15 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
 
 
   public void nulstil() {
+    System.out.println("Nulstiller spillet, og henter nyt ord");
     brugteBogstaver.clear();
     antalForkerteBogstaver = 0;
     spilletErVundet = false;
     spilletErTabt = false;
     if (muligeOrd.isEmpty()) {
       this.hentOrdFraDR();
+    } else {
+      muligeOrd.remove(ordet);
     }
     ordet = muligeOrd.get(new Random().nextInt(muligeOrd.size()));
     opdaterSynligtOrd();
