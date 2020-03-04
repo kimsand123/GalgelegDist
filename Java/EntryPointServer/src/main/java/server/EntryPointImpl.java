@@ -19,7 +19,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.xml.ws.Service;
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class EntryPointImpl implements IEntryPoint {
 
     private List<String> inGamers = new ArrayList<String>();
 
-    public EntryPointImpl() throws MalformedURLException, RemoteException {
+    public EntryPointImpl() throws MalformedURLException {
         super();
 
         URL gameurl = new URL(GAMEURL);

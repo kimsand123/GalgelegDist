@@ -2,10 +2,10 @@ package server;
 
 import javax.xml.ws.Endpoint;
 import java.net.MalformedURLException;
-import java.rmi.RemoteException;
+
 
 public class EntryPointServer {
-    public static void main (String[] args) throws MalformedURLException, RemoteException {
+    public static void main (String[] args) throws MalformedURLException {
         EntryPointImpl entryPoint = new EntryPointImpl();
         System.out.println("Publicerer EntryPointserver vis SOAP....\n");
         Endpoint.publish("http://[::]:9876/entrypoint", entryPoint);
