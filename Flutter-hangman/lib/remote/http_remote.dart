@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:hangman/model/game.dart';
 import 'package:hangman/model/user.dart';
 import 'package:http/http.dart' as http;
 
 class HttpRemote {
-  String serverUrl = 'http://dist.saluton.dk:9875';
+  String serverUrl = 'dist.saluton.dk:9875';
 
   Map<String, String> standardHeaders = {
     HttpHeaders.acceptEncodingHeader: "application/json",
@@ -18,9 +19,9 @@ class HttpRemote {
   /// /auth/logon/
   ///
   Future<http.Response> login(User user) {
-    String url = serverUrl + '/auth/logon';
+    String url = "http://" + serverUrl + '/auth/logon';
 
-    debugPrint('HttpRemote - login with body: ${jsonEncode(user)}');
+    debugPrint('** HttpRemote - login with body: ${jsonEncode(user)}');
     return http.post(url, headers: standardHeaders, body: jsonEncode(user));
   }
 
@@ -29,12 +30,12 @@ class HttpRemote {
   /// /auth/logoff/
   ///
   Future<http.Response> logoff(User user) {
-    String url = serverUrl + '/auth/logoff';
+    String url = "http://" + serverUrl + '/auth/logoff';
 
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    debugPrint('HttpRemote - logoff with body: $token');
-    return http.post(url, headers: standardHeaders, body: jsonEncode(token));
+    debugPrint('** HttpRemote - logoff with body: $sendMap');
+    return http.post(url, headers: standardHeaders, body: jsonEncode(sendMap));
   }
 
   ///
@@ -42,17 +43,18 @@ class HttpRemote {
   /// /bogstaver/gaet/
   ///
   Future<http.Response> guessLetter(User user, String letter) {
-    String url = serverUrl + '/bogstaver/gaet';
+    Uri uri = Uri.http(serverUrl, '/bogstaver/gaet');
+
     String token = user.token;
 
-    Map<String, dynamic> sendObject = {
+    Map<String, dynamic> sendMap = {
       "token": token,
       "letter": letter,
     };
 
-    debugPrint('HttpRemote - guessLetter with body: $sendObject');
-    return http.post(url,
-        headers: standardHeaders, body: jsonEncode(sendObject));
+    debugPrint('** HttpRemote - guessLetter with body: $sendMap');
+
+    return http.post(uri, headers: standardHeaders, body: jsonEncode(sendMap));
   }
 
   ///
@@ -60,11 +62,11 @@ class HttpRemote {
   /// /bogstaver/brugte/
   ///
   Future<http.Response> usedLetters(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/bogstaver/brugte/', token);
+    Uri uri = Uri.http(serverUrl, '/bogstaver/brugte/', sendMap);
 
-    debugPrint('HttpRemote - usedLetters with body: $token');
+    debugPrint('-------HttpRemote - usedLetters with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
@@ -73,11 +75,11 @@ class HttpRemote {
   /// /bogstaver/antalforkerte/
   ///
   Future<http.Response> numberOfWrongLetters(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/bogstaver/antalforkerte/', token);
+    Uri uri = Uri.http(serverUrl, '/bogstaver/antalforkerte/', sendMap);
 
-    debugPrint('HttpRemote - numberOfWrongLetters with body: $token');
+    debugPrint('-------HttpRemote - numberOfWrongLetters with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
@@ -86,11 +88,11 @@ class HttpRemote {
   /// /bogstaver/ersidstekorrekt/
   ///
   Future<http.Response> wasLastLetterCorrect(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/bogstaver/ersidstekorrekt/', token);
+    Uri uri = Uri.http(serverUrl, '/bogstaver/ersidstekorrekt/', sendMap);
 
-    debugPrint('HttpRemote - wasLastLetterCorrect with body: $token');
+    debugPrint('-------HttpRemote - wasLastLetterCorrect with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
@@ -99,11 +101,11 @@ class HttpRemote {
   /// /ordet/ord/
   ///
   Future<http.Response> word(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/ordet/ord/', token);
+    Uri uri = Uri.http(serverUrl, '/ordet/ord/', sendMap);
 
-    debugPrint('HttpRemote - word with body: $token');
+    debugPrint('-------HttpRemote - word with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
@@ -112,11 +114,11 @@ class HttpRemote {
   /// /ordet/synligt/
   ///
   Future<http.Response> visibleWord(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/ordet/synligt/', token);
+    Uri uri = Uri.http(serverUrl, '/ordet/synligt/', sendMap);
 
-    debugPrint('HttpRemote - visibleWord with body: $token');
+    debugPrint('-------HttpRemote - visibleWord with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
@@ -125,11 +127,11 @@ class HttpRemote {
   /// /spillet/vundet/
   ///
   Future<http.Response> isGameWon(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/spillet/vundet/', token);
+    Uri uri = Uri.http(serverUrl, '/spillet/vundet/', sendMap);
 
-    debugPrint('HttpRemote - isGameWon with body: $token');
+    debugPrint('-------HttpRemote - isGameWon with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
@@ -138,15 +140,42 @@ class HttpRemote {
   /// /spillet/tabt/
   ///
   Future<http.Response> isGameLost(User user) {
-    Map<String, String> token = _tokenFromUser(user);
+    Map<String, String> sendMap = _tokenMapFromUser(user);
 
-    Uri uri = Uri.http(serverUrl, '/spillet/tabt/', token);
+    Uri uri = Uri.http(serverUrl, '/spillet/tabt/', sendMap);
 
-    debugPrint('HttpRemote - isGameLost with body: $token');
+    debugPrint('-------HttpRemote - isGameLost with body: $sendMap');
     return http.get(uri, headers: standardHeaders);
   }
 
-  Map<String, String> _tokenFromUser(User user) {
+  ///
+  /// resetGame
+  /// /spillet/nulstil/
+  ///
+  Future<http.Response> resetGame(User user) {
+    Map<String, String> sendMap = _tokenMapFromUser(user);
+
+    Uri uri = Uri.http(serverUrl, '/spillet/nulstil/', sendMap);
+
+    debugPrint('** HttpRemote - resetGame with body: $sendMap');
+    return http.get(uri, headers: standardHeaders);
+  }
+
+  Future<Game> getGameData(User user) async {
+    Game game = Game();
+    game.usedLetters = (await usedLetters(user)).body;
+    game.numberOfWrongLetters = (await numberOfWrongLetters(user)).body;
+    game.wasLastLetterCorrect =
+        ((await wasLastLetterCorrect(user)).body == '0' ? false : true);
+    game.word = (await word(user)).body;
+    game.visibleWord = (await visibleWord(user)).body;
+    game.isGameLost = ((await isGameLost(user)).body == '0' ? false : true);
+    game.isGameWon = ((await isGameWon(user)).body == '0' ? false : true);
+
+    return game;
+  }
+
+  Map<String, String> _tokenMapFromUser(User user) {
     return {
       "token": user.token,
     };
