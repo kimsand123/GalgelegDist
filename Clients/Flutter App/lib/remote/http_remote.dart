@@ -42,7 +42,7 @@ class HttpRemote {
   /// GuessLetter
   /// /bogstaver/gaet/
   ///
-  Future<http.Response> guessLetter(User user, String letter) {
+  Future<http.Response> guessLetter(User user, String letter) async {
     Uri uri = Uri.http(serverUrl, '/bogstaver/gaet');
 
     String token = user.token;
@@ -54,20 +54,24 @@ class HttpRemote {
 
     debugPrint('** HttpRemote - guessLetter with body: $sendMap');
 
-    return http.post(uri, headers: standardHeaders, body: jsonEncode(sendMap));
+    http.Response response = await http.post(uri,
+        headers: standardHeaders, body: jsonEncode(sendMap));
+    return response;
   }
 
   ///
   /// usedLetters
   /// /bogstaver/brugte/
   ///
-  Future<http.Response> usedLetters(User user) {
+  Future<http.Response> usedLetters(User user) async {
     Map<String, String> sendMap = _tokenMapFromUser(user);
 
     Uri uri = Uri.http(serverUrl, '/bogstaver/brugte/', sendMap);
 
     debugPrint('-------HttpRemote - usedLetters with body: $sendMap');
-    return http.get(uri, headers: standardHeaders);
+    http.Response response = await http.get(uri, headers: standardHeaders);
+
+    return response;
   }
 
   ///
@@ -163,14 +167,17 @@ class HttpRemote {
 
   Future<Game> getGameData(User user) async {
     Game game = Game();
-    game.usedLetters =
-        jsonDecode((await usedLetters(user)).body) as List<dynamic>;
+    String usedLettersString =
+        (utf8.decode((await usedLetters(user)).bodyBytes));
+
+    game.usedLetters = jsonDecode(usedLettersString) as List<dynamic>;
+
     game.numberOfWrongLetters = (await numberOfWrongLetters(user)).body;
     game.wasLastLetterCorrect =
         ((await wasLastLetterCorrect(user)).body == '0' ? false : true);
-    game.word = (await word(user)).body;
-    game.visibleWord = (await visibleWord(user)).body;
-    game.isGameLost = ((await isGameLost(user)).body == '0' ? false : true);
+    game.word = (utf8.decode((await word(user)).bodyBytes));
+    game.visibleWord = (utf8.decode((await visibleWord(user)).bodyBytes));
+    game.isGameLost = (((await isGameLost(user)).body) == '0' ? false : true);
     game.isGameWon = ((await isGameWon(user)).body == '0' ? false : true);
 
     return game;
