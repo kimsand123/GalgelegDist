@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hangman/animations/fade_in__animation.dart';
 
 class HangmanKeyboard extends StatefulWidget {
-  var onSingleKeyPressed;
+  final onSingleKeyPressed;
   HangmanKeyboard({this.onSingleKeyPressed});
 
   @override
@@ -21,6 +21,7 @@ class _HangmanKeyboardState extends State<HangmanKeyboard> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.of(context).size.height,
         padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
         decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.primary,

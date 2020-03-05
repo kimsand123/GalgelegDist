@@ -46,7 +46,7 @@ mixin GamePageMixin<Page extends BasePage> on BasePageState<Page> {
         Positioned(
           width: MediaQuery.of(context).size.width,
           top: MediaQuery.of(context).size.height -
-              MediaQuery.of(context).size.height * 0.3,
+              MediaQuery.of(context).size.height * 0.35,
           child: keyboard(),
         ),
         loadingOverlay(),
