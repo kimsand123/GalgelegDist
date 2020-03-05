@@ -36,7 +36,6 @@
                         </manifest>
                     </archive>
                     <descriptorRefs>
-                        <encoding>${project.build.sourceEncoding}</encoding>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                     <appendAssemblyId>false</appendAssemblyId>
