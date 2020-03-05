@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hangman/model/user.dart';
 import 'package:hangman/providers/user_provider.dart';
+import 'package:hangman/remote/http_remote.dart';
 import 'package:hangman/routing/routing_paths.dart';
-import 'package:hangman/views/components/popupComponent.dart';
 import 'package:provider/provider.dart';
 
 import '../base_pages/base_page.dart';
@@ -42,12 +43,11 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                            '${provider.user.username} is logged in with token: ',
-                            style: appTheme().textTheme.caption),
+                        child: Text('Welcome ${provider.user.username}!',
+                            style: appTheme().textTheme.display1),
                       ),
                       Text(
-                        '${provider.user.token}',
+                        'Click to start the hangman-game',
                         style: appTheme().textTheme.subhead,
                         textAlign: TextAlign.center,
                       ),
@@ -89,13 +89,15 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
     );
   }
 
-  void _logout() {
-//TODO Send logout to server to remove token from active-list
+  Future<void> _logout() async {
+    //TODO Send logout to server to remove token from active-list
+    User user = Provider.of<UserProvider>(context, listen: false).user;
+
     setState(() {
       _loading = true;
     });
 
-    Future.delayed(Duration(seconds: 1)).then((value) {
+    HttpRemote().logoff(user).then((value) {
       Navigator.pushNamedAndRemoveUntil(context, loginPageRoute,
           ModalRoute.withName(Navigator.defaultRouteName));
       setState(() {
@@ -105,16 +107,6 @@ class _HomePageState extends BasePageState<HomePage> with AppbarPage {
   }
 
   void _startGame() {
-    //TODO: Implement gameflow
-    showPopupDialog(
-      context,
-      'This is not implemented yet',
-      'Relax dude',
-      {
-        Text(
-          "Ok, i will relax",
-        ): null,
-      },
-    );
+    Navigator.pushNamed(context, gamePageRoute);
   }
 }

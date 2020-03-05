@@ -27,31 +27,31 @@ mixin AppbarPage<Page extends BasePage> on BasePageState<Page> {
 
   @override
   Widget build(BuildContext context) {
-    var appbar = AppBar(
-      actions: <Widget>[action()],
-      centerTitle: true,
-      title: title(),
-    );
-
-    contentHeight = screenHeight() - appbar.preferredSize.height - 24;
+    contentHeight = screenHeight() - 24;
 
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Scaffold(
-        appBar: appbar,
-        body: SingleChildScrollView(
-          child: Container(
-            width: screenWidth(),
-            constraints: BoxConstraints(
-                minHeight: screenHeight() - appbar.preferredSize.height - 24),
-            child: body(),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          Scaffold(
+            body: SingleChildScrollView(
+              child: Container(
+                width: screenWidth(),
+                constraints: BoxConstraints(minHeight: screenHeight() - 24),
+                child: body(),
+              ),
+            ),
           ),
-        ),
+          loadingOverlay(),
+        ],
       ),
     );
   }
+
+  Widget loadingOverlay() => Container();
 
   Widget body();
 

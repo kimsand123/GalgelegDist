@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hangman/views/pages/game_page.dart';
 
 import '../views/pages/home_page.dart';
 import '../views/pages/login_page.dart';
@@ -16,6 +17,12 @@ class Router {
         return MaterialPageRoute(
             settings: RouteSettings(name: homePageRoute),
             builder: (_) => HomePage());
+            
+      case gamePageRoute:
+        return MaterialPageRoute(
+          settings: RouteSettings(name: gamePageRoute),
+          builder: (_) => GamePage()
+        );
 
       default:
         return MaterialPageRoute(

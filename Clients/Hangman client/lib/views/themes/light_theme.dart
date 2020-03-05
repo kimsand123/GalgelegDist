@@ -7,9 +7,9 @@ Edit the Theme of the app here
 class LightTheme {
   static ThemeData themeData = ThemeData(
       colorScheme: ColorScheme(
-        primary: Color(0xFF8950E6),
-        primaryVariant: Color(0xFF4B4453),
-        secondary: Color(0xFF00A1FF),
+        primary: Color(0xFF6e5773),
+        primaryVariant: Color(0xFFe9e1cc),
+        secondary: Color(0xFFd45079),
         secondaryVariant: Color(0xFF3896B6),
         surface: Color(0xFFFFFFFF),
         background: Color(0xFFFFFFFF),

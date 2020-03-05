@@ -38,8 +38,9 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
     _passwordController = TextEditingController();
 
     if (kDebugMode) {
-      _userNameController.text = "s160198";
-      _passwordController.text = "densikkrestekode";
+      User user = Provider.of<UserProvider>(context, listen: false).user;
+      _userNameController.text = user.username ?? '';
+      _passwordController.text = user.password ?? '';
     }
 
     _userNameFocus = FocusNode();
@@ -54,11 +55,20 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
   }
 
   @override
-  Widget title() => Text('Login');
+  Widget title() => Text('');
 
-  /*
-  We create a model for our provider to pass on to the consumers.
-  */
+  @override
+  Widget loadingOverlay() {
+    return Visibility(
+      child: Container(
+          height: contentHeight,
+          width: screenWidth(),
+          alignment: Alignment.center,
+          child: CircularProgressIndicator()),
+      visible: _loading,
+    );
+  }
+
   @override
   Widget body() {
     return Stack(
@@ -69,11 +79,12 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text('Please login with your credentials below',
-                    style: appTheme().textTheme.caption),
-              ),
+              Text('Login',
+                  style: appTheme()
+                      .textTheme
+                      .display3
+                      .copyWith(fontWeight: FontWeight.w700)),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
               Form(
                 key: _formKey,
                 autovalidate: _autoValidate,
@@ -91,7 +102,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
                         controller: _userNameController,
                         maxLines: 1,
                         decoration:
-                            InputDecoration.collapsed(hintText: 'Username'),
+                            InputDecoration.collapsed(hintText: 's170000'),
                         autocorrect: false,
                         keyboardType: TextInputType.text,
                         validator: _validateEmail,
@@ -116,7 +127,7 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
                         obscureText: true,
                         maxLines: 1,
                         decoration:
-                            InputDecoration.collapsed(hintText: 'Password'),
+                            InputDecoration.collapsed(hintText: '************'),
                         autocorrect: false,
                         keyboardType: TextInputType.visiblePassword,
                         textInputAction: TextInputAction.done,
@@ -155,14 +166,6 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
             ],
           ),
         ),
-        Visibility(
-          child: Container(
-              height: contentHeight,
-              width: screenWidth(),
-              alignment: Alignment.center,
-              child: CircularProgressIndicator()),
-          visible: _loading,
-        ),
       ],
     );
   }
@@ -196,8 +199,11 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
       try {
         http.Response response = await HttpRemote().login(user);
 
+        print(
+            'Auth: \n${response.statusCode} - ${response.reasonPhrase} - ${response.body}');
+
         if (response.statusCode == 200) {
-          user.token = response.body;
+          user.token = json.decode(response.body);
           Provider.of<UserProvider>(context, listen: false).setUser(user);
 
           Navigator.pushNamedAndRemoveUntil(context, homePageRoute,
@@ -209,7 +215,8 @@ class _IntroPageState extends BasePageState<LoginPage> with AppbarPage {
           if (response.statusCode == 403) {
             errorResponse = json.decode(response.body)["error"];
           } else {
-            errorResponse = 'Something went wrong';
+            errorResponse =
+                'Something went wrong, please check your credentials or internet connection';
           }
 
           showPopupDialog(
