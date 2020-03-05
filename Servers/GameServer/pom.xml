@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>java-1</groupId>
-    <artifactId>Galgeleg</artifactId>
+    <artifactId>GameServer</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -32,7 +32,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>server.GalgeServer</mainClass>
+                            <mainClass>server.GameServer</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

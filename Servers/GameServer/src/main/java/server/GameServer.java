@@ -2,7 +2,7 @@ package server;
 
 import javax.xml.ws.Endpoint;
 
-public class GalgeServer {
+public class GameServer {
     public static void main(String[] arg) throws Exception{
 
         GalgeLogikImpl galgeLogik = new GalgeLogikImpl();
