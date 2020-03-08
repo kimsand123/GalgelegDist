@@ -172,8 +172,6 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
             replaceAll(" [a-zæøå] "," "). // fjern 1-bogstavsord
             replaceAll(" [a-zæøå][a-zæøå] "," "); // fjern 2-bogstavsord
 
-    System.out.println("data = " + data);
-    System.out.println("data = " + Arrays.asList(data.split("\\s+")));
     muligeOrd.clear();
     muligeOrd.addAll(new HashSet<String>(Arrays.asList(data.split(" "))));
 
@@ -184,7 +182,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
       }
     }
 
-    System.out.println("muligeOrd = " + muligeOrd);
+    //System.out.println("muligeOrd = " + muligeOrd);
     nulstil();
   }
 
@@ -216,7 +214,7 @@ public class GalgeLogikImpl extends UnicastRemoteObject implements IGalgeLogik {
       muligeOrd.add(ordet);
     }
 
-    System.out.println("muligeOrd = " + muligeOrd);
+    //System.out.println("muligeOrd = " + muligeOrd);
     nulstil();
   }
 }
