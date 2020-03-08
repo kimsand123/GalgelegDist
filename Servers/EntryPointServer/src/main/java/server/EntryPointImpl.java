@@ -28,26 +28,34 @@ public class EntryPointImpl implements IEntryPoint {
     //Setting up the clientpart of this service.
     // Connection to the gameserver on Jacobs machine.
     static final String nameSpace = "http://server/";
-    static final String gameLocalPart = "GalgeLogikImplService";
-    private static String gameIP = "130.225.170.204:9875";
-    private static String localGAMEURL = "http://localhost:9898/galgespil?wsdl";
-    private static String GAMEURL = "http://130.225.170.204:9898/galgespil?wsdl";
+
     private IGalgeLogik spil;
-
     private List<String> inGamers = new ArrayList<String>();
+    private String authURL = "";
+    private String distServer = "130.225.170.204";
+    private String localhostServer = "localhost";
 
+    // Must be here because of WebService requirements
     public EntryPointImpl() throws MalformedURLException {
+        new EntryPointImpl(9875,9898, 8970, false);
+    }
+
+    public EntryPointImpl(int entryPort, int gamePort, int authPort, boolean isRunningLocal) throws MalformedURLException {
         super();
 
-        URL gameurl = new URL(GAMEURL);
-        QName gameQname = new QName(nameSpace, gameLocalPart);
-        Service gameservice = Service.create(gameurl, gameQname);
-        spil = gameservice.getPort(IGalgeLogik.class);
-        System.out.println("gameURL = " + GAMEURL + "\n");
+        // Setup urls for entrypoint
+        String entryPointIp = isRunningLocal ? localhostServer + entryPort : distServer + ":" + entryPort;
+        String chosenGameURL = isRunningLocal ? "http://" + localhostServer + ":" + gamePort + "/galgespil?wsdl" : "http://" + distServer + ":" + gamePort + "/galgespil?wsdl";
+        authURL = isRunningLocal ? "http://" + localhostServer + ":" + authPort +"/auth/" : "http://" + distServer + ":" + authPort +"/auth/";
 
+        URL gameUrl = new URL(chosenGameURL);
+        QName gameQname = new QName(nameSpace, "GalgeLogikImplService");
+        Service gameService = Service.create(gameUrl, gameQname);
+        spil = gameService.getPort(IGalgeLogik.class);
+        System.out.println("gameURL = " + chosenGameURL + "\n");
 
         //Setting up Javalin Endpoints
-        Javalin restServer = Javalin.create().start(9875);
+        Javalin restServer = Javalin.create().start(entryPort);
 
         //Til debugging or logging, should probably write to a file instead.
         restServer.before(ctx -> {
@@ -63,10 +71,10 @@ public class EntryPointImpl implements IEntryPoint {
 
         restServer.get("bogstaver/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>bogstaver/<br/>\n<br/>\n" +
-                        "<a href=\"http://"+gameIP+"/bogstaver/gaet/\">  HUSK \"token\":\"value\":\"letter\":\"value\" i body som formdata. Gætter på et bogstav<br/>\n</br>\n"+
-                        "<a href=\"http://"+gameIP+"/bogstaver/brugte/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer de brugte bogstaver<br/>\n</br>\n"+
-                        "<a href=\"http://"+gameIP+"/bogstaver/antalforkerte/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer antal forkerte gæt om<br/>\n</br>\n"+
-                        "<a href=\"http://"+gameIP+"/bogstaver/ersidstekorrekt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer om det sidste bogstav var korrekt <br/>\n</br>\n"
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/gaet/\">  HUSK \"token\":\"value\":\"letter\":\"value\" i body som formdata. Gætter på et bogstav<br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/brugte/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer de brugte bogstaver<br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/antalforkerte/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer antal forkerte gæt om<br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/ersidstekorrekt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer om det sidste bogstav var korrekt <br/>\n</br>\n"
                 ));
         restServer.post("bogstaver/gaet/", ctx -> restGaetBogstav(ctx));
         restServer.get("bogstaver/brugte/", ctx -> restBrugteBogstaver(ctx));
@@ -75,16 +83,16 @@ public class EntryPointImpl implements IEntryPoint {
 
         restServer.get("ordet/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                         .result("<html><body>ordet/<br/>\n<br/>\n" +
-                                "<a href=\"http://"+gameIP+"/ordet/ord/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer ordet der bliver spillet om<br/>\n</br>\n"+
-                                "<a href=\"http://"+gameIP+"/ordet/synligt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer det der er synligt af ordet indtil videre<br/>\n</br>\n"
+                                "<a href=\"http://"+ entryPointIp +"/ordet/ord/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer ordet der bliver spillet om<br/>\n</br>\n"+
+                                "<a href=\"http://"+ entryPointIp +"/ordet/synligt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer det der er synligt af ordet indtil videre<br/>\n</br>\n"
                                 ));
         restServer.get("ordet/ord/", ctx -> restOrdet(ctx));
         restServer.get("ordet/synligt/", ctx -> restSynligtOrd(ctx));
 
         restServer.get("spillet/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>spillet/<br/>\n<br/>\n" +
-                        "<a href=\"http://"+gameIP+"/spillet/vundet/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer om spillet er vundet<br/>\n</br>\n"+
-                        "<a href=\"http://"+gameIP+"/spillet/tabt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer om spillet er tabt<br/>\n</br>\n"
+                        "<a href=\"http://"+ entryPointIp +"/spillet/vundet/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer om spillet er vundet<br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/spillet/tabt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer om spillet er tabt<br/>\n</br>\n"
                 ));
         restServer.get("spillet/vundet/", ctx -> restVundet(ctx));
         restServer.get("spillet/tabt/", ctx -> restTabt(ctx));
@@ -97,8 +105,8 @@ public class EntryPointImpl implements IEntryPoint {
         });*/
         restServer.get("auth/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>auth/<br/>\n<br/>\n" +
-                        "<a href=\"http://"+gameIP+"/auth/logon/\">  HUSK \"username\":\"value\",\"password\":\"value\" i body som formdata. Logger på spillet<br/>\n</br>\n"+
-                        "<a href=\"http://"+gameIP+"/auth/logoff/\">   HUSK \"token\":\"value\" i body som formdata. Logger af spillet<br/>\n</br>\n"
+                        "<a href=\"http://"+ entryPointIp +"/auth/logon/\">  HUSK \"username\":\"value\",\"password\":\"value\" i body som formdata. Logger på spillet<br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/auth/logoff/\">   HUSK \"token\":\"value\" i body som formdata. Logger af spillet<br/>\n</br>\n"
                 ));
         restServer.post("auth/logoff/", ctx -> {
             System.out.println("token: " + ctx.formParam("token") + "\n");
@@ -228,11 +236,9 @@ public class EntryPointImpl implements IEntryPoint {
     public String epLogOn(String username, String password) throws UnirestException {
         System.out.println("logon username: "+username + " password "+ password + "\n");
 
-        String url = "http://130.225.170.204:8970/auth/";
-
         String body = "{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}\n";
 
-        HttpResponse<JsonNode> response = Unirest.post(url)
+        HttpResponse<JsonNode> response = Unirest.post(authURL)
                 .body(body)
                 .asJson();
         JSONObject json = response.getBody().getObject();
