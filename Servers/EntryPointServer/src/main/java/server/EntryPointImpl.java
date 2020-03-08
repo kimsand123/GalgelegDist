@@ -52,7 +52,6 @@ public class EntryPointImpl implements IEntryPoint {
         QName gameQname = new QName(nameSpace, "GalgeLogikImplService");
         Service gameService = Service.create(gameUrl, gameQname);
         spil = gameService.getPort(IGalgeLogik.class);
-        System.out.println("gameURL = " + chosenGameURL + "\n");
 
         //Setting up Javalin Endpoints
         Javalin restServer = Javalin.create().start(entryPort);

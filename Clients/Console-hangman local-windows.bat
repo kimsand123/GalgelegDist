@@ -1,0 +1,1 @@
+java -cp Console/Console-1.0.jar console.Console 1

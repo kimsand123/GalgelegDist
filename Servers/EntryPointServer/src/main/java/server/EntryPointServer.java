@@ -66,7 +66,7 @@ public class EntryPointServer {
             System.out.println("\nPublishing EntryPointserver via REST (locally: "+ isRunningLocal + ") on port: " + entryRestPort + "....\n");
             EntryPointImpl entryPoint = new EntryPointImpl(entryRestPort,gamePort, authPort, isRunningLocal);
 
-            System.out.println("\nPublishing EntryPointserver via SOAP (locally: "+ isRunningLocal + ") on port: " + entryRestPort + "....\n");
+            System.out.println("\nPublishing EntryPointserver via SOAP (locally: "+ isRunningLocal + ") on port: " + entrySoapPort + "....\n");
             Endpoint.publish("http://[::]:"+ entrySoapPort +"/entrypoint", entryPoint);
 
             System.out.println("\nEntryPointServer server is now running..\n\n");

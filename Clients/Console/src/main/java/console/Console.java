@@ -11,8 +11,22 @@ import  java.util.Scanner;
 public class Console {
 
     public static void main(String[] args) throws Exception {
-
         boolean testEnvironment = false;
+
+        if (args.length == 0 || args[0] == null) {
+            System.out.println("You have forgotten to add your desired config");
+            System.out.println("-running default config:");
+            System.out.println("[localHost: '0'");
+        } else if (args.length > 1) {
+            System.out.println("Argument list too long, only one argument is needed (isLocalHost?) either '1' or '0'");
+            System.exit(0);
+        } else if (! args[0].matches("\\b([0-1])\\b")){
+            System.out.println("Argument list wrong, only one argument is needed (isLocalHost?) either '1' or '0'");
+            System.exit(0);
+        } else {
+            testEnvironment = args[0].equals("1");
+        }
+
 
         IEntryPoint spil = null;
         Scanner input = new Scanner(System.in);
