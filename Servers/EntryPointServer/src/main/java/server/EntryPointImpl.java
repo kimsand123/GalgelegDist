@@ -46,7 +46,7 @@ public class EntryPointImpl implements IEntryPoint {
         // Setup urls for entrypoint
         String entryPointIp = isRunningLocal ? localhostServer + entryPort : distServer + ":" + entryPort;
         String chosenGameURL = isRunningLocal ? "http://" + localhostServer + ":" + gamePort + "/galgespil?wsdl" : "http://" + distServer + ":" + gamePort + "/galgespil?wsdl";
-        authURL = isRunningLocal ? "http://" + localhostServer + ":" + authPort +"/auth/" : "http://" + distServer + ":" + authPort +"/auth/";
+        authURL = isRunningLocal ? "http://" + localhostServer + ":" + authPort +"/auth/" : "http://" + distServer + ":" + authPort +"/auth";
 
         URL gameUrl = new URL(chosenGameURL);
         QName gameQname = new QName(nameSpace, "GalgeLogikImplService");

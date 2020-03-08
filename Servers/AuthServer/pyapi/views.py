@@ -1,25 +1,72 @@
 # views.py
 import json
 import uuid
+from collections import namedtuple
 
 from suds.client import Client
-from .serializers import HeroSerializer
-from .models import Hero
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
+@api_view()
+def login(request):
+    print('1 - Step 1')
+
+    # Remove all methods but POST
+    if request.method != "POST":
+        json_data = {
+            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+            'error': '2 You may only use the auth service with a POST method.',
+        }
+        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
 @api_view(['POST'])
 def login(request):
-    decoded = request.body.decode('utf-8')
-    response = json.loads(decoded)
+    # Remove all methods but POST
+    if request.method != "POST":
+        json_data = {
+            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
+            'error': '1 You may only use the auth service with a POST method.',
+        }
+        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    try:
+        decoded = request.body.decode('utf-8')
+        response = json.loads(decoded)
+
+        # Remove all calls where username and password is not there
+        if ('username' not in response) or ('password' not in response):
+            json_data = {
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'You need to send a JSON-body with your request like this: '
+                           '{'
+                           '\'username\':\'s123456\''
+                           '\'password\':\'superPassword\''
+                           '}',
+            }
+            return Response(data=json_data, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        # Remove all calls where username and password is not there
+        json_data = {
+            'status': status.HTTP_400_BAD_REQUEST,
+            'message': 'You need to send a JSON-body with your request like this: '
+                       '{'
+                       '\'username\':\'s123456\''
+                       '\'password\':\'superPassword\''
+                       '}',
+        }
+        return Response(data=json_data, status=status.HTTP_400_BAD_REQUEST)
+
+    # Parse username and password from response
     username = response['username']
     password = response['password']
 
     url = 'http://javabog.dk:9901/brugeradmin?wsdl'
     client = Client(url)
+
+    # Contact brugeradmin-service, with the username and password
     try:
         client.service.hentBruger(username, password)
         token = uuid.uuid1()
@@ -28,56 +75,39 @@ def login(request):
         }
         return Response(data=json_token, status=status.HTTP_200_OK)
     except Exception as e:
+        # If username is in response, there must be a wrong password or username
         if 'Forkert brugernavn eller adgangskode for' in e.__str__():
-            json_error = {
+            json_data = {
                 'status': status.HTTP_403_FORBIDDEN,
                 'error': 'Wrong password or username',
             }
-            return Response(data=json_error, status=status.HTTP_403_FORBIDDEN)
+            return Response(data=json_data, status=status.HTTP_403_FORBIDDEN)
+        # Else there must be a server error
         else:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            json_data = {
+                'status': status.HTTP_503_SERVICE_UNAVAILABLE,
+                'error': 'Something went wrong when we tried to connect to http://javabog.dk:9901/brugeradmin'
+            }
+            return Response(data=json_data, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
 
-
-@api_view(['GET', 'POST'])
-def hero_list(request):
-    """
-    List all code hero, or create a new hero.
-    """
-    if request.method == 'GET':
-        heroes = Hero.objects.all()
-        serializer = HeroSerializer(heroes, many=True)
-        return Response(data=serializer.data)
-
-    elif request.method == 'POST':
-        serializer = HeroSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# Welcome message for the path "/"
+@api_view()
+def welcome(request):
+    json_data = {
+        'status': status.HTTP_200_OK,
+        'message': 'This server only contains one Auth service, found at the link below',
+        'url': '\'http://' + request.get_host() + '/auth/\''
+    }
+    return Response(data=json_data, status=status.HTTP_200_OK)
 
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def hero_detail(request, name):
-    """
-    Retrieve, update or delete a hero.
-    """
-    try:
-        hero = Hero.objects.get(name=name)
-    except Hero.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = HeroSerializer(hero)
-        return Response(data=serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = HeroSerializer(hero, data=request.post)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(data=serializer.data)
-        return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        hero.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+# Bad request message for the all the other paths "/"
+@api_view()
+def bad_request(request):
+    json_data = {
+        'status': status.HTTP_400_BAD_REQUEST,
+        'message': 'This server only contains one Auth service, found at the link below',
+        'url': '\'http://' + request.get_host() + '/auth/\''
+    }
+    return Response(data=json_data, status=status.HTTP_400_BAD_REQUEST)

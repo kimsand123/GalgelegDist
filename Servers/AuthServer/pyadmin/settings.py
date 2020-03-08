@@ -24,10 +24,9 @@ SECRET_KEY = '@v@r0rs=29w5$j991#j+04vk^r63lqmnn#+m(=29elit8mxf#v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '[::]', 'dist.saluton.dk', '130.225.170.204', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::]', 'dist.saluton.dk', '130.225.170.204']
 
-# Application definition
-
+# Application definition<
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pyapi.apps.PyapiConfig',
     'rest_framework',
 ]
 
@@ -111,6 +109,10 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
+# https://docs.djangoproject.com/en/1.6/howto/static-files/
+STATIC_ROOT = '/static'
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
