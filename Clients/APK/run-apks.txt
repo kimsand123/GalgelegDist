@@ -1,0 +1,9 @@
+** APKs ** 
+
+There are different APK's for different systems:
+
+- You are running on a real device
+	* Choose the /Release apk's
+
+- You are running on a simulator
+	* Choose the /Debug apk
