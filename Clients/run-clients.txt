@@ -1,0 +1,13 @@
+** Clients ** 
+
+These are the clients you can run.
+
+- To install the app on an android, please go to the APK-folder
+
+
+If you want to open the java-client with a terminal,
+then open up a terminal at this folder.
+
+- Text-based client in java, run: 
+	* java -cp Console/Console-1.0.jar console.Console 0
+		- The '0' can be exchanged with '1' if you run local servers

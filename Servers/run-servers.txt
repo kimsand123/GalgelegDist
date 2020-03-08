@@ -1,0 +1,19 @@
+** Servers ** 
+
+These are the servers you can run.
+
+
+If you want to open the servers with a terminal,
+then open up a terminal at this folder.
+
+- AuthServer:
+	* python3 AuthServer/manage.py runserver [::]:8970
+		- You must have python installed on your system
+
+- GameServer:
+	* java -cp GameServer/GameServer-1.0.jar server.GameServer
+
+- EntryPointServer:
+	* java -cp EntryPointServer/EntryPoint-1.0.jar server.EntryPointServer
+		- You can add '1' at the end if you run locally
+		- The entrypoint is depending on authserver and gameserver
