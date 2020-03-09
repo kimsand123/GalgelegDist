@@ -1,7 +1,0 @@
-#!/bin/bash
-
-python3 AuthServer/manage.py runserver [::]:8970
-
-java -cp /GameServer/GameServer-1.0.jar server.GameServer
-
-java -cp /EntryPointServer/EntryPoint-1.0.jar server.EntryPointServer 1

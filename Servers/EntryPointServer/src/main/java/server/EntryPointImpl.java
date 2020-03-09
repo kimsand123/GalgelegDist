@@ -44,7 +44,7 @@ public class EntryPointImpl implements IEntryPoint {
         super();
 
         // Setup urls for entrypoint
-        String entryPointIp = isRunningLocal ? localhostServer + entryPort : distServer + ":" + entryPort;
+        String entryPointIp = isRunningLocal ? localhostServer + ":" + entryPort : distServer + ":" + entryPort;
         String chosenGameURL = isRunningLocal ? "http://" + localhostServer + ":" + gamePort + "/galgespil?wsdl" : "http://" + distServer + ":" + gamePort + "/galgespil?wsdl";
         authURL = isRunningLocal ? "http://" + localhostServer + ":" + authPort +"/auth/" : "http://" + distServer + ":" + authPort +"/auth/";
 
