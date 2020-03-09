@@ -9,26 +9,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-@api_view()
-def login(request):
-    print('1 - Step 1')
-
-    # Remove all methods but POST
-    if request.method != "POST":
-        json_data = {
-            'status': status.HTTP_405_METHOD_NOT_ALLOWED,
-            'error': '2 You may only use the auth service with a POST method.',
-        }
-        return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-
-
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 def login(request):
     # Remove all methods but POST
-    if request.method != "POST":
+    if request.method == "GET":
         json_data = {
             'status': status.HTTP_405_METHOD_NOT_ALLOWED,
-            'error': '1 You may only use the auth service with a POST method.',
+            'error': 'You may only use the auth service with a POST method.',
         }
         return Response(data=json_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 

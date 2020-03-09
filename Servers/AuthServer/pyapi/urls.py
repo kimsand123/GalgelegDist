@@ -7,6 +7,6 @@ from . import views
 
 urlpatterns = [
     path('', views.welcome),
-    path('auth', views.login),
+    path('auth/', views.login),
     re_path(r'$', views.bad_request),
 ]
