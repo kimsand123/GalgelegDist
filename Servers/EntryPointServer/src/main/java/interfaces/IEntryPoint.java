@@ -31,10 +31,10 @@ public interface IEntryPoint {
     int epErSpilletTabt(String token);
 
     @WebMethod
-    void epNulstil(String token);
+    int epNulstil(String token);
 
     @WebMethod
-    void epGætBogstav(String token, String bogstav);
+    int epGætBogstav(String token, String bogstav);
 
   /*  @WebMethod
     void epLogStatus(String token);

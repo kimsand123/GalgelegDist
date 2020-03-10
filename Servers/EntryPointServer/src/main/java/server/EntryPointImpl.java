@@ -70,10 +70,10 @@ public class EntryPointImpl implements IEntryPoint {
 
         restServer.get("bogstaver/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>bogstaver/<br/>\n<br/>\n" +
-                        "<a href=\"http://"+ entryPointIp +"/bogstaver/gaet/\">  HUSK \"token\":\"value\":\"letter\":\"value\" i body som formdata. Gætter på et bogstav<br/>\n</br>\n"+
-                        "<a href=\"http://"+ entryPointIp +"/bogstaver/brugte/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer de brugte bogstaver<br/>\n</br>\n"+
-                        "<a href=\"http://"+ entryPointIp +"/bogstaver/antalforkerte/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer antal forkerte gæt om<br/>\n</br>\n"+
-                        "<a href=\"http://"+ entryPointIp +"/bogstaver/ersidstekorrekt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer om det sidste bogstav var korrekt <br/>\n</br>\n"
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/gaet/?token=\"validtoken\"&letter=\"bogstav du gætter på\"><br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/brugte/?token=\"validtoken\"><br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/antalforkerte/?token=\"validtoken\"><br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/bogstaver/ersidstekorrekt/?token=\"validtoken\"><br/>\n</br>\n"
                 ));
         restServer.post("bogstaver/gaet/", ctx -> restGaetBogstav(ctx));
         restServer.get("bogstaver/brugte/", ctx -> restBrugteBogstaver(ctx));
@@ -81,17 +81,17 @@ public class EntryPointImpl implements IEntryPoint {
         restServer.get("bogstaver/ersidstekorrekt/", ctx -> restSidsteBogstavKorrekt(ctx));
 
         restServer.get("ordet/", ctx ->  ctx.contentType("text/html; charset=utf-8")
-                        .result("<html><body>ordet/<br/>\n<br/>\n" +
-                                "<a href=\"http://"+ entryPointIp +"/ordet/ord/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer ordet der bliver spillet om<br/>\n</br>\n"+
-                                "<a href=\"http://"+ entryPointIp +"/ordet/synligt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer det der er synligt af ordet indtil videre<br/>\n</br>\n"
-                                ));
+                .result("<html><body>ordet/<br/>\n<br/>\n" +
+                        "<a href=\"http://"+ entryPointIp +"/ordet/ord/?token=\"validtoken\">\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/ordet/synligt/?token=\"validtoken\">\n</br>\n"
+                ));
         restServer.get("ordet/ord/", ctx -> restOrdet(ctx));
         restServer.get("ordet/synligt/", ctx -> restSynligtOrd(ctx));
 
         restServer.get("spillet/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>spillet/<br/>\n<br/>\n" +
-                        "<a href=\"http://"+ entryPointIp +"/spillet/vundet/\">  HUSK \"token\":\"value\" i body som formdata. Returnerer om spillet er vundet<br/>\n</br>\n"+
-                        "<a href=\"http://"+ entryPointIp +"/spillet/tabt/\">   HUSK \"token\":\"value\" i body som formdata. Returnerer om spillet er tabt<br/>\n</br>\n"
+                        "<a href=\"http://"+ entryPointIp +"/spillet/vundet/?token=\"validtoken\">\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/spillet/tabt/?token=\"validtoken\">\n</br>\n"
                 ));
         restServer.get("spillet/vundet/", ctx -> restVundet(ctx));
         restServer.get("spillet/tabt/", ctx -> restTabt(ctx));
@@ -104,8 +104,8 @@ public class EntryPointImpl implements IEntryPoint {
         });*/
         restServer.get("auth/", ctx ->  ctx.contentType("text/html; charset=utf-8")
                 .result("<html><body>auth/<br/>\n<br/>\n" +
-                        "<a href=\"http://"+ entryPointIp +"/auth/logon/\">  HUSK \"username\":\"value\",\"password\":\"value\" i body som formdata. Logger på spillet<br/>\n</br>\n"+
-                        "<a href=\"http://"+ entryPointIp +"/auth/logoff/\">   HUSK \"token\":\"value\" i body som formdata. Logger af spillet<br/>\n</br>\n"
+                        "<a href=\"http://"+ entryPointIp +"/auth/logon/?username=\"username\"&password=\"password\"><br/>\n</br>\n"+
+                        "<a href=\"http://"+ entryPointIp +"/auth/logoff/?token=\"validtoken\">\n</br>\n"
                 ));
         restServer.post("auth/logoff/", ctx -> {
             System.out.println("token: " + ctx.formParam("token") + "\n");
@@ -198,18 +198,22 @@ public class EntryPointImpl implements IEntryPoint {
         return -1;
     }
 
-    public void epNulstil(String token) {
+    public int epNulstil(String token) {
         System.out.println("epNulstil token: "+token);
         if (checkGamerToken(token)) {
             spil.nulstil();
+            return 1;
         }
+        return -1;
     }
 
-    public void epGætBogstav(String token, String letter) {
+    public int epGætBogstav(String token, String letter) {
         System.out.println("gætbogstav token: "+token + " bogstav: "+ letter + "\n");
         if (checkGamerToken(token)) {
             spil.gætBogstav(letter);
+            return 1;
         }
+        return -1;
     }
 
     public void logStatus(String token) {
@@ -263,9 +267,7 @@ public class EntryPointImpl implements IEntryPoint {
         if (brugteBogstaver != null) {
             ctx.result("Her er de brugte bogstaver ").json(brugteBogstaver);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /brugtebogstaver/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/brugte/?token=\"validtoken\"");ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/brugte/?token=\"validtoken\"");
         }
     }
 
@@ -276,9 +278,7 @@ public class EntryPointImpl implements IEntryPoint {
         if (ordet != null) {
             ctx.json(ordet);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /ordet/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /ordet/ord/?token=\"validtoken\"");
         }
     }
 
@@ -289,9 +289,7 @@ public class EntryPointImpl implements IEntryPoint {
         if(synligtOrd != null){
             ctx.json(synligtOrd);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /ordet/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /ordet/synligt/?token=\"validtoken\"");
         }
 
     }
@@ -302,22 +300,17 @@ public class EntryPointImpl implements IEntryPoint {
         if (antal > -1) {
             ctx.json(antal);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /AntalForkerteBogstaver/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/antalforkert/?token=\"validtoken\"");
         }
     }
 
     private void restSidsteBogstavKorrekt(Context ctx) {
         String token = ctx.queryParam("token");
         int korrekt = epErSidsteBogstavKorrekt(token);
-        //TODO clients skal håndtere en int -1=ikke valideret, 0=falsk, 1=true
         if (korrekt > -1) {
             ctx.json(korrekt);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/ersidstekorrekt/?token=\"validtoken\"");
         }
     }
 
@@ -327,8 +320,7 @@ public class EntryPointImpl implements IEntryPoint {
         if (vundet > -1) {
             ctx.json(vundet);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /spillet/vundet/?token=\"validtoken\"");
         }
     }
 
@@ -338,8 +330,7 @@ public class EntryPointImpl implements IEntryPoint {
         if (tabt > -1) {
             ctx.json(tabt);
         } else {
-            //TODO depending on which REST organisation the feedback should be adapted
-            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /spillet/tabt/?token=\"validtoken\"");
         }
     }
 
@@ -354,22 +345,21 @@ public class EntryPointImpl implements IEntryPoint {
             String token = map.get("token");
             String letter = map.get("letter");
 
-            //TODO interface til gætBogstav skal returnere om det gik godt eller dårligt med token check.
-            if (checkGamerToken(token)) {
-                epGætBogstav(token, letter);
+            if (epGætBogstav(token, letter)==1) {
+
             } else {
-                //TODO depending on which REST organisation the feedback should be adapted
-                ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+                ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/gaet/?token=\"validtoken\"&gaet=\"bogstavet du gætter på\"");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            ctx.status(500).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/gaet/?token=\"validtoken\"&gaet=\"bogstavet du gætter på\"");
         }
     }
 
     private void restLogOn(Context ctx) throws UnirestException {
         String body = ctx.body();
+        System.out.println("method " + ctx.method());
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -385,12 +375,12 @@ public class EntryPointImpl implements IEntryPoint {
                 ctx.json(token);
             } else {
                 //TODO depending on which REST organisation the feedback should be adapted
-                ctx.status(403).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+                ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/gaet/?username=\"dit username\"&password=\"password\"");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            ctx.status(500).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /SidsteBogstavKorrekt/\\033[3mvalidToken\\033[0m");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /bogstaver/gaet/?username=\"dit username\"&password=\"password\"");
         }
     }
 
@@ -404,13 +394,18 @@ public class EntryPointImpl implements IEntryPoint {
 
             String token = map.get("token");
 
-            String besked = epLogOff(token);
+            if (!token.equals(null)) {
 
-            ctx.status(200).result(besked);
+                String besked = epLogOff(token);
+                ctx.status(200).result(besked);
+            } else {
+                ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /auth/logoff/?token=\"validtoken\"");
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();
-            ctx.status(500).result("Medsend venligst token, for at logge ud");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /auth/logoff/?token=\"validtoken\"");
         }
     }
 
@@ -424,13 +419,15 @@ public class EntryPointImpl implements IEntryPoint {
 
             String token = map.get("token");
 
-            epNulstil(token);
-
-            ctx.status(200);
+            if (epNulstil(token)==1){
+                ctx.status(200);
+            } else {
+                ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /auth/logoff/?token=\"validtoken\"");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
-            ctx.status(500).result("Medsend venligst token, for at nulstille spillet");
+            ctx.status(401).result("Ikke Autoriseret. Du skal bruge en valideret token samt \n syntaksen /auth/logoff/?token=\"validtoken\"");
         }
     }
 }

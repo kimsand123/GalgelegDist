@@ -11,7 +11,7 @@ import  java.util.Scanner;
 public class Console {
 
     public static void main(String[] args) throws Exception {
-        boolean testEnvironment = false;
+        boolean testEnvironment = true;
 
         if (args.length == 0 || args[0] == null) {
             System.out.println("You have forgotten to add your desired config");
@@ -110,7 +110,7 @@ public class Console {
 
                     //Send input, og check om bogstavet var korrekt
                     spil.epGætBogstav(token, letter);
-                    System.out.println(spil.epErSpilletVundet("Er spillet vundet" + token));
+                    //System.out.println(spil.epErSpilletVundet("Er spillet vundet" + token));
                     if (spil.epErSpilletVundet(token)==1) {
                         System.out.println("Tillykke du vandt");
                         //System.out.println("Tillykke " + user.fornavn + ", du har vundet spillet");
@@ -140,7 +140,7 @@ public class Console {
                             isGameOver = true;
                             break;
                         }
-                    } else System.out.println(spil.epErSpilletTabt("spillet tabt = " + token));
+                    } else //System.out.println(spil.epErSpilletTabt("spillet tabt = " + token));
                         if (spil.epErSpilletTabt(token)==1) {
                         System.out.println(graphics.getTheMan(spil.epGetAntalForkerteBogstaver(token)-1));
                         System.out.println("Du har desværre tabt spillet");
@@ -160,7 +160,7 @@ public class Console {
                         } else if(endGameResponse.equals("n")) {
                             System.out.println("* * * * * * * * * *");
                             System.out.println("Ok, farvel");
-                            System.out.println(spil.epLogOff(token));
+                            spil.epLogOff(token);
                            // System.out.println("Ok, farvel " + user.fornavn);
                             System.out.println("* * * * * * * * * *");
                             isGameOver = true;
@@ -173,8 +173,6 @@ public class Console {
                     } else {
                         if (spil.epErSidsteBogstavKorrekt(token)==1) {
                             System.out.println("Bogstavet " + letter + " findes i ordet");
-
-
                         } else {
                             //hangman picture
                             System.out.println("Bogstavet " + letter + " findes ikke i ordet");
